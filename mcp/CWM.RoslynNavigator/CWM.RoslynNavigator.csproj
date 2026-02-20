@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <LangVersion>14</LangVersion>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>CWM.RoslynNavigator</RootNamespace>
+    <AssemblyName>CWM.RoslynNavigator</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="tests\**" />
+    <None Remove="tests\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ModelContextProtocol" Version="0.2.0-preview.1" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="5.0.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="5.0.0" />
+    <PackageReference Include="Microsoft.Build.Locator" Version="1.7.8" />
+  </ItemGroup>
+
+</Project>

@@ -53,14 +53,14 @@ Each template needs:
 
 ### Roslyn MCP Server
 
-The MCP server at `mcp/roslyn-navigator/` provides semantic analysis tools.
+The MCP server at `mcp/CWM.RoslynNavigator/` provides semantic analysis tools.
 
 ```bash
 # Build
-dotnet build mcp/roslyn-navigator/roslyn-navigator.csproj
+dotnet build mcp/CWM.RoslynNavigator/CWM.RoslynNavigator.csproj
 
 # Run tests
-dotnet test mcp/roslyn-navigator/tests/roslyn-navigator.tests.csproj
+dotnet test mcp/CWM.RoslynNavigator/tests/CWM.RoslynNavigator.Tests.csproj
 ```
 
 **MCP contribution guidelines:**
@@ -76,8 +76,8 @@ dotnet test mcp/roslyn-navigator/tests/roslyn-navigator.tests.csproj
 3. Ensure all validations pass:
    - Skill frontmatter is valid
    - Skill files are under 400 lines
-   - MCP server builds: `dotnet build mcp/roslyn-navigator/roslyn-navigator.csproj`
-   - MCP tests pass: `dotnet test mcp/roslyn-navigator/tests/roslyn-navigator.tests.csproj`
+   - MCP server builds: `dotnet build mcp/CWM.RoslynNavigator/CWM.RoslynNavigator.csproj`
+   - MCP tests pass: `dotnet test mcp/CWM.RoslynNavigator/tests/CWM.RoslynNavigator.Tests.csproj`
    - Code formatting: `dotnet format --verify-no-changes`
 4. Open a pull request with a clear description of changes
 

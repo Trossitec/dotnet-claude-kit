@@ -1,12 +1,12 @@
 {
   "mcpServers": {
-    "roslyn-navigator": {
+    "cwm-roslyn-navigator": {
       "type": "stdio",
       "command": "dotnet",
       "args": [
         "run",
         "--project",
-        "./mcp/roslyn-navigator/roslyn-navigator.csproj",
+        "./mcp/CWM.RoslynNavigator/CWM.RoslynNavigator.csproj",
         "--",
         "--solution",
         "${workspaceFolder}"

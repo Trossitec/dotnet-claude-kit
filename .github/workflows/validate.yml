@@ -71,10 +71,10 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Restore
-        run: dotnet restore mcp/roslyn-navigator/roslyn-navigator.csproj
+        run: dotnet restore mcp/CWM.RoslynNavigator/CWM.RoslynNavigator.csproj
 
       - name: Build
-        run: dotnet build mcp/roslyn-navigator/roslyn-navigator.csproj --no-restore -c Release
+        run: dotnet build mcp/CWM.RoslynNavigator/CWM.RoslynNavigator.csproj --no-restore -c Release
 
   test-mcp:
     name: Test MCP Server
@@ -89,10 +89,10 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Restore
-        run: dotnet restore mcp/roslyn-navigator/tests/roslyn-navigator.tests.csproj
+        run: dotnet restore mcp/CWM.RoslynNavigator/tests/CWM.RoslynNavigator.Tests.csproj
 
       - name: Test
-        run: dotnet test mcp/roslyn-navigator/tests/roslyn-navigator.tests.csproj --no-restore -c Release --logger trx --results-directory TestResults
+        run: dotnet test mcp/CWM.RoslynNavigator/tests/CWM.RoslynNavigator.Tests.csproj --no-restore -c Release --logger trx --results-directory TestResults
 
       - name: Publish test results
         uses: actions/upload-artifact@v4
@@ -113,7 +113,7 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
 
       - name: Restore
-        run: dotnet restore mcp/roslyn-navigator/roslyn-navigator.csproj
+        run: dotnet restore mcp/CWM.RoslynNavigator/CWM.RoslynNavigator.csproj
 
       - name: Format check
-        run: dotnet format mcp/roslyn-navigator/roslyn-navigator.csproj --verify-no-changes --no-restore
+        run: dotnet format mcp/CWM.RoslynNavigator/CWM.RoslynNavigator.csproj --verify-no-changes --no-restore

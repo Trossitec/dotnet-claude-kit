@@ -189,9 +189,9 @@ dotnet-claude-kit/
 │  └─────────────────────────────────────────────────────┘
 │
 ├── mcp/
-│   └── roslyn-navigator/
+│   └── CWM.RoslynNavigator/
 │       ├── README.md                      # Setup, prerequisites, tool reference
-│       ├── roslyn-navigator.csproj
+│       ├── CWM.RoslynNavigator.csproj
 │       ├── src/
 │       │   ├── Program.cs                 # MCP server entry point (stdio transport)
 │       │   ├── WorkspaceManager.cs        # MSBuildWorkspace lifecycle:
@@ -251,7 +251,7 @@ dotnet-claude-kit/
 │  │  CONFIG                                             │
 │  └─────────────────────────────────────────────────────┘
 │
-├── .mcp.json                              # MCP server registration (roslyn-navigator)
+├── .mcp.json                              # MCP server registration (CWM.RoslynNavigator)
 ├── .editorconfig                          # C# coding style for the repo itself
 │
 │
@@ -299,7 +299,7 @@ Contents:
 Each agent is a markdown file with:
 - **Role definition**: What this agent is an expert in
 - **Skill dependencies**: Which skills this agent loads
-- **MCP tool usage**: When to use roslyn-navigator tools vs reading files
+- **MCP tool usage**: When to use CWM.RoslynNavigator tools vs reading files
 - **Response patterns**: How to structure guidance (code examples, explanations, warnings)
 - **Boundaries**: What this agent does NOT handle (delegates back to router)
 
@@ -379,7 +379,7 @@ Each template is a complete, ready-to-copy CLAUDE.md that:
 [Which dotnet-claude-kit skills apply — Claude loads these for context]
 
 ## MCP Tools
-[How Claude should use roslyn-navigator for this project]
+[How Claude should use CWM.RoslynNavigator for this project]
 
 ## Commands
 [dotnet build, test, run, migrate commands specific to this project]
@@ -400,7 +400,7 @@ These are NOT skills (not loaded by the Agent Skills system). They are reference
 | `breaking-changes.md` | Per major .NET version | Migration pitfalls |
 | `decisions/*.md` | As architectural choices are made | ADRs explaining WHY behind defaults |
 
-### 7. Roslyn MCP Server — `roslyn-navigator`
+### 7. Roslyn MCP Server — `CWM.RoslynNavigator`
 
 **Goal:** Reduce token consumption by 5-10x for codebase navigation tasks.
 
@@ -422,7 +422,7 @@ These are NOT skills (not loaded by the Agent Skills system). They are reference
               │
               ▼
 ┌─────────────────────────────────────┐
-│  roslyn-navigator MCP Server         │
+│  CWM.RoslynNavigator MCP Server      │
 │                                     │
 │  ┌───────────────────────────────┐  │
 │  │ WorkspaceManager              │  │
@@ -535,10 +535,10 @@ Output: { "diagnostics": [{ "id": "CS8602", "severity": "warning", "message": "D
 ```json
 {
   "mcpServers": {
-    "roslyn-navigator": {
+    "cwm-roslyn-navigator": {
       "type": "stdio",
       "command": "dotnet",
-      "args": ["run", "--project", "./mcp/roslyn-navigator/roslyn-navigator.csproj", "--", "--solution", "${workspaceFolder}"],
+      "args": ["run", "--project", "./mcp/CWM.RoslynNavigator/CWM.RoslynNavigator.csproj", "--", "--solution", "${workspaceFolder}"],
       "description": "Token-efficient .NET codebase navigation via Roslyn semantic analysis"
     }
   }
@@ -572,10 +572,10 @@ git clone https://github.com/codewithmukesh/dotnet-claude-kit.git
 cd dotnet-claude-kit
 
 # Build the Roslyn MCP server
-dotnet build mcp/roslyn-navigator/
+dotnet build mcp/CWM.RoslynNavigator/
 
 # Run validation
-dotnet test mcp/roslyn-navigator/tests/
+dotnet test mcp/CWM.RoslynNavigator/tests/
 
 # CI validates all SKILL.md frontmatter + MCP server builds
 ```
@@ -618,7 +618,7 @@ dotnet test mcp/roslyn-navigator/tests/
 - [ ] knowledge/decisions/ (all 4 ADRs + template)
 
 ### v0.3.0 — Roslyn MCP
-- [ ] roslyn-navigator MCP server (all 7 tools)
+- [ ] CWM.RoslynNavigator MCP server (all 7 tools)
 - [ ] WorkspaceManager with warm loading + file watcher
 - [ ] Lazy project loading for large solutions
 - [ ] Integration tests
@@ -639,5 +639,5 @@ dotnet test mcp/roslyn-navigator/tests/
 1. **Claude Code plugin marketplace** — When this stabilizes, should dotnet-claude-kit be published as a single installable plugin?
 2. **Slash commands** — Should v1.1 add `.claude/commands/` for `/scaffold-feature`, `/review-pr`, etc.?
 3. **GitHub Actions integration** — Should v1.1 add a workflow for Claude-powered PR reviews?
-4. **Additional MCP tools** — Should roslyn-navigator expand to include `RenameSymbol`, `ExtractInterface`, or stay read-only?
+4. **Additional MCP tools** — Should CWM.RoslynNavigator expand to include `RenameSymbol`, `ExtractInterface`, or stay read-only?
 5. **Blazor/MAUI-specific agents** — Are the 5 templates enough, or do Blazor/MAUI need dedicated agents?

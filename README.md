@@ -98,7 +98,7 @@ Token-efficient codebase navigation via semantic analysis. Instead of reading fu
 | `get_public_api` | Public API without full file | ~100 vs 500+ |
 | `get_diagnostics` | Compiler warnings/errors | ~50-300 |
 
-See [mcp/roslyn-navigator/README.md](mcp/roslyn-navigator/README.md) for setup details.
+See [mcp/CWM.RoslynNavigator/README.md](mcp/CWM.RoslynNavigator/README.md) for setup details.
 
 ### Hooks
 
@@ -117,7 +117,7 @@ dotnet-claude-kit/
 ├── skills/                      # 17 opinionated skills
 ├── templates/                   # 5 drop-in CLAUDE.md templates
 ├── knowledge/                   # Living reference documents + ADRs
-├── mcp/roslyn-navigator/        # Roslyn MCP server
+├── mcp/CWM.RoslynNavigator/     # Roslyn MCP server
 ├── hooks/                       # Claude Code hooks
 ├── .mcp.json                    # MCP server registration
 └── .github/workflows/           # CI validation

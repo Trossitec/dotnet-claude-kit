@@ -54,7 +54,7 @@ Agents live at `agents/<agent-name>.md`. Each agent contains:
 
 1. **Role definition** — What this agent is an expert in
 2. **Skill dependencies** — Which skills this agent loads (by name)
-3. **MCP tool usage** — When to use roslyn-navigator tools vs reading files
+3. **MCP tool usage** — When to use cwm-roslyn-navigator tools vs reading files
 4. **Response patterns** — How to structure guidance
 5. **Boundaries** — What this agent does NOT handle
 
@@ -79,13 +79,13 @@ Knowledge files at `knowledge/` are NOT skills. They're reference material that 
 
 ## Roslyn MCP Server
 
-The MCP server lives at `mcp/roslyn-navigator/`. It's a .NET 10 application using the ModelContextProtocol SDK.
+The MCP server lives at `mcp/CWM.RoslynNavigator/`. It's a .NET 10 application using the ModelContextProtocol SDK.
 
 ### Building
 
 ```bash
-dotnet build mcp/roslyn-navigator/roslyn-navigator.csproj
-dotnet test mcp/roslyn-navigator/tests/roslyn-navigator.tests.csproj
+dotnet build mcp/CWM.RoslynNavigator/CWM.RoslynNavigator.csproj
+dotnet test mcp/CWM.RoslynNavigator/tests/CWM.RoslynNavigator.Tests.csproj
 ```
 
 ### Key Rules

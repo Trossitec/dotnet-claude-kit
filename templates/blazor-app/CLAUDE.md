@@ -133,7 +133,7 @@ Load these dotnet-claude-kit skills for context:
 
 ## MCP Tools
 
-Use `roslyn-navigator` tools to minimize token consumption:
+Use `cwm-roslyn-navigator` tools to minimize token consumption:
 
 - **Before modifying a type** — Use `find_symbol` to locate it, `get_public_api` to understand its surface
 - **Before adding a reference** — Use `find_references` to understand existing usage
