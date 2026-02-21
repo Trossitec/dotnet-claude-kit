@@ -94,6 +94,53 @@ dotnet test mcp/CWM.RoslynNavigator/tests/CWM.RoslynNavigator.Tests.csproj
 - Responses are **token-optimized** — Return file paths, line numbers, and short snippets, never full file contents
 - The workspace must handle **graceful loading** — Return "loading" status instead of errors during initialization
 
+## Workflow Standards
+
+How Claude should work on this repository (and any project using dotnet-claude-kit templates).
+
+### Plan Before Building
+
+- Enter plan mode for ANY non-trivial task (3+ steps or architectural decisions)
+- Iterate on the plan until it's solid before writing code
+- If something goes sideways mid-implementation, STOP and re-plan — don't keep pushing through a broken approach
+- Write detailed specs upfront to reduce ambiguity — vague plans produce vague code
+
+### Verify Before Done
+
+- Never mark a task complete without proving it works
+- Run `dotnet build` and `dotnet test` after changes — green builds are the minimum bar
+- Use `get_diagnostics` via the Roslyn MCP to catch warnings after modifications
+- Ask yourself: "Would a staff .NET engineer approve this?" — if not, iterate
+- Diff behavior between main and your changes when relevant
+
+### Fix Bugs Autonomously
+
+- When given a bug report: investigate and fix it. Don't ask for hand-holding
+- Point at logs, errors, failing tests — then resolve them
+- Go fix failing CI tests without being told how
+- Zero context switching required from the user
+
+### Demand Elegance (Balanced)
+
+- For non-trivial changes: pause and ask "is there a more elegant way?"
+- If a fix feels hacky, step back: "Knowing everything I know now, implement the elegant solution"
+- Skip this for simple, obvious fixes — don't over-engineer. Three lines of clear code beats a premature abstraction
+- Challenge your own work before presenting it
+
+### Use Subagents for Parallel Work
+
+- Use subagents liberally to keep the main context window clean
+- Offload research, exploration, and parallel analysis to subagents
+- One task per subagent for focused execution
+- For complex problems, throw more compute at it via subagents rather than doing sequential work
+
+### Learn from Corrections
+
+- After ANY correction from the user, capture the pattern in auto memory (`MEMORY.md`)
+- Write rules that prevent the same mistake from recurring
+- Review memory at session start for project-relevant lessons
+- This is a compounding system — mistake rate should drop over time
+
 ## Contribution Workflow
 
 1. Check the spec at `docs/dotnet-claude-kit-SPEC.md` for the full vision

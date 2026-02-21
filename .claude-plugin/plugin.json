@@ -1,7 +1,7 @@
 {
   "name": "dotnet-claude-kit",
   "version": "0.3.0",
-  "description": "The definitive Claude Code companion for .NET developers. 20 skills, 8 agents, Roslyn MCP server for modern .NET 10 / C# 14.",
+  "description": "The definitive Claude Code companion for .NET developers. 21 skills, 8 agents, Roslyn MCP server for modern .NET 10 / C# 14.",
   "author": {
     "name": "Mukesh Murugan",
     "url": "https://codewithmukesh.com"

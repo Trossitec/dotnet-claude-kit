@@ -10,7 +10,7 @@
     {
       "name": "dotnet-claude-kit",
       "source": "./",
-      "description": "20 skills, 8 agents, Roslyn MCP server for .NET 10 / C# 14",
+      "description": "21 skills, 8 agents, Roslyn MCP server for .NET 10 / C# 14",
       "version": "0.3.0",
       "license": "MIT",
       "keywords": [

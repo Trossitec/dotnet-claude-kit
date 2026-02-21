@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - **Multi-architecture support** — New skills: `architecture-advisor`, `clean-architecture`, `ddd`
+- **Workflow mastery skill** — `workflow-mastery` skill covering parallel worktrees, plan mode strategy, verification loops, auto-format hooks, permission setup, and subagent patterns for .NET (inspired by Boris Cherny's tips)
+- **Workflow Standards section** in root CLAUDE.md and all 5 templates — plan before building, verify before done, fix bugs autonomously, demand elegance, use subagents, learn from corrections
 - **Architecture advisor questionnaire** — 15+ questions across 6 categories to recommend the best-fit architecture (VSA, Clean Architecture, DDD + CA, Modular Monolith)
 - **ADR-005** — Multi-architecture decision record superseding ADR-001 (VSA-only default)
 - **Plugin distribution** — `.claude-plugin/plugin.json` and `marketplace.json` for Claude Code plugin marketplace
@@ -23,7 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - All 5 templates updated to reference `architecture-advisor` skill
 - `web-api` template now shows 3 architecture options (VSA, CA, DDD)
 - `modular-monolith` template updated to support per-module architecture choice
-- Skills count: 17 → 20
+- Skills count: 17 → 21
 - Branding: "opinionated" → "definitive"
 - ADR-001 marked as superseded by ADR-005
 - MediatR description updated to mention architecture-agnostic compatibility

@@ -123,6 +123,7 @@ Load these dotnet-claude-kit skills for context:
 - `configuration` — Options pattern, secrets management, environment-specific config
 - `dependency-injection` — Service lifetimes, keyed services, registration patterns
 - `testing` — xUnit v3, test harness, Testcontainers
+- `workflow-mastery` — Parallel worktrees, verification loops, subagent patterns
 
 ## MCP Tools
 
@@ -158,6 +159,15 @@ docker run --rm -e DOTNET_ENVIRONMENT=Production [project-name]-worker
 # Format check
 dotnet format --verify-no-changes
 ```
+
+## Workflow
+
+- **Plan first** — Enter plan mode for any non-trivial task (3+ steps or architecture decisions). Iterate until the plan is solid before writing code.
+- **Verify before done** — Run `dotnet build` and `dotnet test` after changes. Use `get_diagnostics` via MCP to catch warnings. Ask: "Would a staff engineer approve this?"
+- **Fix bugs autonomously** — When given a bug report, investigate and fix it without hand-holding. Check logs, errors, failing tests — then resolve them.
+- **Stop and re-plan** — If implementation goes sideways, STOP and re-plan. Don't push through a broken approach.
+- **Use subagents** — Offload research, exploration, and parallel analysis to subagents. One task per subagent for focused execution.
+- **Learn from corrections** — After any correction, capture the pattern in memory so the same mistake never recurs.
 
 ## Anti-patterns
 

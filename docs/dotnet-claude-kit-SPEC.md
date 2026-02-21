@@ -53,7 +53,7 @@ dotnet-claude-kit/
 │
 │
 │  ┌─────────────────────────────────────────────────────┐
-│  │  SKILLS — 20 architecture-aware skills                │
+│  │  SKILLS — 21 skills                │
 │  └─────────────────────────────────────────────────────┘
 │
 ├── skills/
@@ -147,10 +147,16 @@ dotnet-claude-kit/
 │   │   └── SKILL.md                       # Options pattern, IOptionsSnapshot vs IOptions,
 │   │                                      # secrets management, environment-based config
 │   │
-│   └── project-structure/
-│       └── SKILL.md                       # .slnx, Directory.Build.props, Directory.Packages.props,
-│                                          # central package management, global usings,
-│                                          # editorconfig, naming conventions
+│   ├── project-structure/
+│   │   └── SKILL.md                       # .slnx, Directory.Build.props, Directory.Packages.props,
+│   │                                      # central package management, global usings,
+│   │                                      # editorconfig, naming conventions
+│   │
+│   │  -- Workflow --
+│   └── workflow-mastery/
+│       └── SKILL.md                       # Parallel worktrees, plan mode, verification
+│                                          # loops, auto-format hooks, permissions,
+│                                          # subagent patterns for .NET
 │
 │
 │  ┌─────────────────────────────────────────────────────┐
@@ -599,7 +605,7 @@ dotnet test mcp/CWM.RoslynNavigator/tests/
 
 | Concern | dotnet-artisan | dotnet-skills | **dotnet-claude-kit** |
 |---|---|---|---|
-| **Philosophy** | Encyclopedia (130 skills, cover everything) | Akka.NET focused (30 skills) | **Guided playbook (20 skills, advisor-driven architecture)** |
+| **Philosophy** | Encyclopedia (130 skills, cover everything) | Akka.NET focused (30 skills) | **Guided playbook (21 skills, advisor-driven architecture)** |
 | **Project templates** | None | None | **5 ready-to-copy CLAUDE.md templates** |
 | **Token efficiency** | No MCP, relies on file scanning | No MCP | **Roslyn MCP for 5-10x reduction** |
 | **Architecture stance** | All patterns as equals | Akka.NET patterns | **Advisor-driven: VSA, CA, DDD, Modular Monolith** |
@@ -607,7 +613,7 @@ dotnet test mcp/CWM.RoslynNavigator/tests/
 | **Living knowledge** | Static skills only | Static skills only | **knowledge/ directory updated per .NET release** |
 | **Hooks** | Has hooks | None | **Pre-commit format + post-scaffold restore** |
 | **Decision records** | None | None | **ADRs explaining every opinionated default** |
-| **Quality bar** | Breadth (130 skills, 2 contributors, 477 commits) | Depth in Akka.NET domain | **Depth across 20 core skills, max 400 lines each** |
+| **Quality bar** | Breadth (130 skills, 2 contributors, 477 commits) | Depth in Akka.NET domain | **Depth across 21 core skills, max 400 lines each** |
 
 ---
 
