@@ -10,7 +10,7 @@ public class FindSymbolTests(TestSolutionFixture fixture) : IClassFixture<TestSo
     [Fact]
     public async Task FindSymbol_Class_ReturnsCorrectLocation()
     {
-        var json = await FindSymbolTool.ExecuteAsync(fixture.WorkspaceManager, "Order", "class");
+        var json = await FindSymbolTool.ExecuteAsync(fixture.WorkspaceManager, "Order", "class", ct: TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<SymbolSearchResult>(json)!;
 
         Assert.NotEmpty(result.Symbols);
@@ -20,7 +20,7 @@ public class FindSymbolTests(TestSolutionFixture fixture) : IClassFixture<TestSo
     [Fact]
     public async Task FindSymbol_Interface_ReturnsCorrectKind()
     {
-        var json = await FindSymbolTool.ExecuteAsync(fixture.WorkspaceManager, "IOrderRepository", "interface");
+        var json = await FindSymbolTool.ExecuteAsync(fixture.WorkspaceManager, "IOrderRepository", "interface", ct: TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<SymbolSearchResult>(json)!;
 
         Assert.Single(result.Symbols);
@@ -31,7 +31,7 @@ public class FindSymbolTests(TestSolutionFixture fixture) : IClassFixture<TestSo
     [Fact]
     public async Task FindSymbol_Method_ReturnsMethodKind()
     {
-        var json = await FindSymbolTool.ExecuteAsync(fixture.WorkspaceManager, "Cancel", "method");
+        var json = await FindSymbolTool.ExecuteAsync(fixture.WorkspaceManager, "Cancel", "method", ct: TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<SymbolSearchResult>(json)!;
 
         Assert.NotEmpty(result.Symbols);
@@ -41,7 +41,7 @@ public class FindSymbolTests(TestSolutionFixture fixture) : IClassFixture<TestSo
     [Fact]
     public async Task FindSymbol_Nonexistent_ReturnsEmpty()
     {
-        var json = await FindSymbolTool.ExecuteAsync(fixture.WorkspaceManager, "NonExistentType12345");
+        var json = await FindSymbolTool.ExecuteAsync(fixture.WorkspaceManager, "NonExistentType12345", ct: TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<SymbolSearchResult>(json)!;
 
         Assert.Empty(result.Symbols);
@@ -50,7 +50,7 @@ public class FindSymbolTests(TestSolutionFixture fixture) : IClassFixture<TestSo
     [Fact]
     public async Task FindSymbol_Enum_ReturnsEnumKind()
     {
-        var json = await FindSymbolTool.ExecuteAsync(fixture.WorkspaceManager, "OrderStatus", "enum");
+        var json = await FindSymbolTool.ExecuteAsync(fixture.WorkspaceManager, "OrderStatus", "enum", ct: TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<SymbolSearchResult>(json)!;
 
         Assert.Single(result.Symbols);
@@ -60,7 +60,7 @@ public class FindSymbolTests(TestSolutionFixture fixture) : IClassFixture<TestSo
     [Fact]
     public async Task FindSymbol_Record_ReturnsRecordKind()
     {
-        var json = await FindSymbolTool.ExecuteAsync(fixture.WorkspaceManager, "OrderItem", "record");
+        var json = await FindSymbolTool.ExecuteAsync(fixture.WorkspaceManager, "OrderItem", "record", ct: TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<SymbolSearchResult>(json)!;
 
         Assert.NotEmpty(result.Symbols);

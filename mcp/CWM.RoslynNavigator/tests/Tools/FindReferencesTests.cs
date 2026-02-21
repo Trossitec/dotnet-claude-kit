@@ -10,7 +10,7 @@ public class FindReferencesTests(TestSolutionFixture fixture) : IClassFixture<Te
     [Fact]
     public async Task FindReferences_CrossProjectInterface_ReturnsMultipleReferences()
     {
-        var json = await FindReferencesTool.ExecuteAsync(fixture.WorkspaceManager, "IOrderRepository");
+        var json = await FindReferencesTool.ExecuteAsync(fixture.WorkspaceManager, "IOrderRepository", ct: TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<ReferencesResult>(json)!;
 
         // IOrderRepository is referenced in Infrastructure (implementations) and Api (OrderService)
@@ -20,7 +20,7 @@ public class FindReferencesTests(TestSolutionFixture fixture) : IClassFixture<Te
     [Fact]
     public async Task FindReferences_ClassUsedInSameFile_ReturnsReferences()
     {
-        var json = await FindReferencesTool.ExecuteAsync(fixture.WorkspaceManager, "Order");
+        var json = await FindReferencesTool.ExecuteAsync(fixture.WorkspaceManager, "Order", ct: TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<ReferencesResult>(json)!;
 
         // Order is referenced in many places
@@ -30,7 +30,7 @@ public class FindReferencesTests(TestSolutionFixture fixture) : IClassFixture<Te
     [Fact]
     public async Task FindReferences_NonexistentSymbol_ReturnsZero()
     {
-        var json = await FindReferencesTool.ExecuteAsync(fixture.WorkspaceManager, "ZZZNonExistentXXX");
+        var json = await FindReferencesTool.ExecuteAsync(fixture.WorkspaceManager, "ZZZNonExistentXXX", ct: TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<ReferencesResult>(json)!;
 
         Assert.Equal(0, result.Count);

@@ -29,7 +29,7 @@ public class WorkspaceManagerTests(TestSolutionFixture fixture) : IClassFixture<
         var solution = fixture.WorkspaceManager.GetSolution()!;
         var project = solution.Projects.First();
 
-        var compilation = await fixture.WorkspaceManager.GetCompilationAsync(project.Id);
+        var compilation = await fixture.WorkspaceManager.GetCompilationAsync(project.Id, TestContext.Current.CancellationToken);
 
         Assert.NotNull(compilation);
     }
@@ -37,7 +37,7 @@ public class WorkspaceManagerTests(TestSolutionFixture fixture) : IClassFixture<
     [Fact]
     public async Task GetAllCompilationsAsync_ShouldReturnAll()
     {
-        var compilations = await fixture.WorkspaceManager.GetAllCompilationsAsync();
+        var compilations = await fixture.WorkspaceManager.GetAllCompilationsAsync(TestContext.Current.CancellationToken);
 
         Assert.Equal(3, compilations.Count);
     }

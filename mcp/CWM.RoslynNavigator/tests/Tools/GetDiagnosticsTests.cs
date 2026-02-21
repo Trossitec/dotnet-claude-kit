@@ -10,7 +10,7 @@ public class GetDiagnosticsTests(TestSolutionFixture fixture) : IClassFixture<Te
     [Fact]
     public async Task GetDiagnostics_SolutionScope_ReturnsDiagnostics()
     {
-        var json = await GetDiagnosticsTool.ExecuteAsync(fixture.WorkspaceManager, scope: "solution");
+        var json = await GetDiagnosticsTool.ExecuteAsync(fixture.WorkspaceManager, scope: "solution", ct: TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<DiagnosticsResult>(json)!;
 
         // The sample solution has an intentional unused variable in ProductService
@@ -24,7 +24,8 @@ public class GetDiagnosticsTests(TestSolutionFixture fixture) : IClassFixture<Te
         var json = await GetDiagnosticsTool.ExecuteAsync(
             fixture.WorkspaceManager,
             scope: "file",
-            path: "ProductService.cs");
+            path: "ProductService.cs",
+            ct: TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<DiagnosticsResult>(json)!;
 
         // ProductService.cs has the intentional unused variable
@@ -37,7 +38,8 @@ public class GetDiagnosticsTests(TestSolutionFixture fixture) : IClassFixture<Te
         var json = await GetDiagnosticsTool.ExecuteAsync(
             fixture.WorkspaceManager,
             scope: "solution",
-            severityFilter: "error");
+            severityFilter: "error",
+            ct: TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<DiagnosticsResult>(json)!;
 
         // All returned diagnostics should be errors
@@ -50,7 +52,8 @@ public class GetDiagnosticsTests(TestSolutionFixture fixture) : IClassFixture<Te
         var json = await GetDiagnosticsTool.ExecuteAsync(
             fixture.WorkspaceManager,
             scope: "project",
-            path: "SampleDomain");
+            path: "SampleDomain",
+            ct: TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<DiagnosticsResult>(json)!;
 
         // SampleDomain should have clean compilations (no intentional issues)

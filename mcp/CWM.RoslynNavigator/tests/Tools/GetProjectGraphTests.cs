@@ -10,7 +10,7 @@ public class GetProjectGraphTests(TestSolutionFixture fixture) : IClassFixture<T
     [Fact]
     public async Task GetProjectGraph_ReturnsAllProjects()
     {
-        var json = await GetProjectGraphTool.ExecuteAsync(fixture.WorkspaceManager);
+        var json = await GetProjectGraphTool.ExecuteAsync(fixture.WorkspaceManager, ct: TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<ProjectGraphResult>(json)!;
 
         Assert.Equal(3, result.Projects.Count);
@@ -22,7 +22,7 @@ public class GetProjectGraphTests(TestSolutionFixture fixture) : IClassFixture<T
     [Fact]
     public async Task GetProjectGraph_CorrectReferences_InfrastructureDependsOnDomain()
     {
-        var json = await GetProjectGraphTool.ExecuteAsync(fixture.WorkspaceManager);
+        var json = await GetProjectGraphTool.ExecuteAsync(fixture.WorkspaceManager, ct: TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<ProjectGraphResult>(json)!;
 
         var infra = result.Projects.First(p => p.Name == "SampleInfrastructure");
@@ -32,7 +32,7 @@ public class GetProjectGraphTests(TestSolutionFixture fixture) : IClassFixture<T
     [Fact]
     public async Task GetProjectGraph_CorrectReferences_ApiDependsOnBoth()
     {
-        var json = await GetProjectGraphTool.ExecuteAsync(fixture.WorkspaceManager);
+        var json = await GetProjectGraphTool.ExecuteAsync(fixture.WorkspaceManager, ct: TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<ProjectGraphResult>(json)!;
 
         var api = result.Projects.First(p => p.Name == "SampleApi");
@@ -43,7 +43,7 @@ public class GetProjectGraphTests(TestSolutionFixture fixture) : IClassFixture<T
     [Fact]
     public async Task GetProjectGraph_SolutionName_IsCorrect()
     {
-        var json = await GetProjectGraphTool.ExecuteAsync(fixture.WorkspaceManager);
+        var json = await GetProjectGraphTool.ExecuteAsync(fixture.WorkspaceManager, ct: TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<ProjectGraphResult>(json)!;
 
         Assert.Equal("SampleSolution.sln", result.Solution);

@@ -50,13 +50,13 @@ public sealed class WorkspaceManager : IDisposable
             _logger.LogInformation("Loading solution: {SolutionPath}", solutionPath);
 
             _workspace = MSBuildWorkspace.Create();
-            _workspace.WorkspaceFailed += (_, args) =>
+            _workspace.RegisterWorkspaceFailedHandler(args =>
             {
                 if (args.Diagnostic.Kind == WorkspaceDiagnosticKind.Failure)
                     _logger.LogError("Workspace failure: {Message}", args.Diagnostic.Message);
                 else
                     _logger.LogWarning("Workspace warning: {Message}", args.Diagnostic.Message);
-            };
+            });
 
             _solution = await _workspace.OpenSolutionAsync(solutionPath, cancellationToken: ct);
 

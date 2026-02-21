@@ -10,7 +10,7 @@ public class FindImplementationsTests(TestSolutionFixture fixture) : IClassFixtu
     [Fact]
     public async Task FindImplementations_InterfaceWithTwoImpls_ReturnsBoth()
     {
-        var json = await FindImplementationsTool.ExecuteAsync(fixture.WorkspaceManager, "IOrderRepository");
+        var json = await FindImplementationsTool.ExecuteAsync(fixture.WorkspaceManager, "IOrderRepository", ct: TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<ImplementationsResult>(json)!;
 
         Assert.Equal(2, result.Implementations.Count);
@@ -21,7 +21,7 @@ public class FindImplementationsTests(TestSolutionFixture fixture) : IClassFixtu
     [Fact]
     public async Task FindImplementations_InterfaceWithOneImpl_ReturnsSingle()
     {
-        var json = await FindImplementationsTool.ExecuteAsync(fixture.WorkspaceManager, "IProductRepository");
+        var json = await FindImplementationsTool.ExecuteAsync(fixture.WorkspaceManager, "IProductRepository", ct: TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<ImplementationsResult>(json)!;
 
         Assert.Single(result.Implementations);
@@ -31,7 +31,7 @@ public class FindImplementationsTests(TestSolutionFixture fixture) : IClassFixtu
     [Fact]
     public async Task FindImplementations_AbstractClass_ReturnsDerived()
     {
-        var json = await FindImplementationsTool.ExecuteAsync(fixture.WorkspaceManager, "BaseEntity");
+        var json = await FindImplementationsTool.ExecuteAsync(fixture.WorkspaceManager, "BaseEntity", ct: TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<ImplementationsResult>(json)!;
 
         Assert.Contains(result.Implementations, i => i.Type == "AuditableProduct");
@@ -40,7 +40,7 @@ public class FindImplementationsTests(TestSolutionFixture fixture) : IClassFixtu
     [Fact]
     public async Task FindImplementations_ClassWithNoImpls_ReturnsEmpty()
     {
-        var json = await FindImplementationsTool.ExecuteAsync(fixture.WorkspaceManager, "Product");
+        var json = await FindImplementationsTool.ExecuteAsync(fixture.WorkspaceManager, "Product", ct: TestContext.Current.CancellationToken);
         var result = JsonSerializer.Deserialize<ImplementationsResult>(json)!;
 
         Assert.Empty(result.Implementations);
