@@ -20,7 +20,7 @@ Use this template when you're building:
 This template configures Claude Code to:
 - Choose an architecture (VSA, Clean Architecture, or DDD) via the architecture-advisor skill
 - Use .NET 10 / C# 14 modern patterns
-- Prefer minimal APIs with `TypedResults` and `MapGroup`
+- Use `IEndpointGroup` per feature with `app.MapEndpoints()` auto-discovery — no endpoints in Program.cs
 - Use EF Core directly (no repository pattern)
 - Write integration tests with `WebApplicationFactory` + Testcontainers
 - Use the Result pattern for error handling

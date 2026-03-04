@@ -27,6 +27,29 @@ public sealed class OrderService(AppDbContext db)
 public interface IRepository<T> { Task<T?> GetByIdAsync(Guid id); }
 ```
 
+## Endpoint Organization
+
+- **Every endpoint group gets its own file implementing `IEndpointGroup`.** Never define endpoints inline in `Program.cs`. Each feature/resource gets a dedicated `*Endpoints.cs` file.
+- **Use `app.MapEndpoints()` for auto-discovery.** Program.cs calls `app.MapEndpoints()` once. This scans the assembly for all `IEndpointGroup` implementations and registers them. Program.cs never changes when adding new endpoints.
+- **Never add `MapGroup` or `Map*Endpoints()` calls to Program.cs.** Both inline endpoints and manual extension-method wiring in Program.cs are anti-patterns. The `IEndpointGroup` interface + auto-discovery is the only accepted pattern.
+
+```csharp
+// DO — auto-discovered endpoint group in its own file
+public sealed class OrderEndpoints : IEndpointGroup
+{
+    public void Map(IEndpointRouteBuilder app)
+    {
+        var group = app.MapGroup("/api/orders").WithTags("Orders");
+        group.MapGet("/", ListOrders);
+        group.MapPost("/", CreateOrder);
+    }
+}
+
+// DON'T — manual wiring in Program.cs
+app.MapGroup("/api/orders").MapOrderEndpoints();
+app.MapGroup("/api/products").MapProductEndpoints();
+```
+
 ## Project Organization
 
 - **Feature folders over layer folders.** Vertical slices keep related code together, reducing the number of files you touch per feature.
@@ -36,9 +59,10 @@ public interface IRepository<T> { Task<T?> GetByIdAsync(Guid id); }
 Features/                     Controllers/
   Orders/                       OrdersController.cs
     CreateOrder.cs              ProductsController.cs
-    GetOrder.cs               Services/
-  Products/                     OrderService.cs
-    CreateProduct.cs            ProductService.cs
+    OrderEndpoints.cs           GetOrder.cs
+  Products/                   Services/
+    CreateProduct.cs            OrderService.cs
+    ProductEndpoints.cs         ProductService.cs
 ```
 
 - **Dependency direction is inward.** Domain depends on nothing. Application depends on Domain. Infrastructure depends on Application. Presentation depends on Application. Never reverse these arrows.

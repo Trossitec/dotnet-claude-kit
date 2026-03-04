@@ -28,7 +28,7 @@ This template configures Claude Code to:
 - Use MassTransit integration events for inter-module communication with the transactional outbox
 - Keep the Shared project thin — only contracts, primitives, and cross-cutting infrastructure
 - Use .NET 10 / C# 14 modern patterns
-- Prefer minimal APIs with `TypedResults` and `MapGroup`
+- Use `IEndpointGroup` per feature with `app.MapEndpoints()` auto-discovery — no endpoints in Program.cs
 - Write tests scoped to individual modules and cross-module integration tests
 - Use the Result pattern for error handling
 - Follow structured logging with Serilog
@@ -57,9 +57,9 @@ When adding a new module:
 
 1. Create a new class library: `src/Modules/[NewModule]/[ProjectName].Modules.[NewModule]/`
 2. Add `Features/`, `Persistence/`, and `Consumers/` folders
-3. Create `[NewModule]Module.cs` with `Add[NewModule]Module` and `Map[NewModule]Module` extension methods
-4. Create a module-scoped `[NewModule]DbContext` with its own schema
-5. Register the module in `Program.cs` of the Host project
+3. Create `[NewModule]Module.cs` with `Add[NewModule]Module` for DI registration
+4. Create endpoint classes implementing `IEndpointGroup` (auto-discovered — no Program.cs changes)
+5. Create a module-scoped `[NewModule]DbContext` with its own schema
 6. Add integration event records to the Shared contracts project as needed
 7. Create a corresponding test project under `tests/Modules/`
 

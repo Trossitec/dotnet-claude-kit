@@ -88,22 +88,20 @@ public static class CreateOrder
     }
 }
 
-// Endpoint registration (in Program.cs or a MapGroup extension)
-public static class OrderEndpoints
+// Features/Orders/OrderEndpoints.cs — auto-discovered via IEndpointGroup
+public sealed class OrderEndpoints : IEndpointGroup
 {
-    public static RouteGroupBuilder MapOrders(this IEndpointRouteBuilder app)
+    public void Map(IEndpointRouteBuilder app)
     {
-        var group = app.MapGroup("/orders").WithTags("Orders");
+        var group = app.MapGroup("/api/orders").WithTags("Orders");
 
         group.MapPost("/", async (CreateOrder.Command command, ISender sender) =>
         {
             var result = await sender.Send(command);
             return result.IsSuccess
-                ? Results.Created($"/orders/{result.Value.Id}", result.Value)
+                ? Results.Created($"/api/orders/{result.Value.Id}", result.Value)
                 : result.ToProblemDetails();
         });
-
-        return group;
     }
 }
 ```

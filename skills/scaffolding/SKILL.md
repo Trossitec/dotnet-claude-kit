@@ -63,9 +63,19 @@ public static class CreateOrder
     }
 }
 
-// In endpoint mapping:
-// group.MapPost("/", async (CreateOrder.Command cmd, CreateOrder.Handler handler, CancellationToken ct) =>
-//     TypedResults.Created($"/orders/{result.Id}", await handler.HandleAsync(cmd, ct)));
+// Features/Orders/OrderEndpoints.cs — auto-discovered via IEndpointGroup
+public sealed class OrderEndpoints : IEndpointGroup
+{
+    public void Map(IEndpointRouteBuilder app)
+    {
+        var group = app.MapGroup("/api/orders").WithTags("Orders");
+        group.MapPost("/", async (CreateOrder.Command cmd, CreateOrder.Handler handler, CancellationToken ct) =>
+        {
+            var response = await handler.HandleAsync(cmd, ct);
+            return TypedResults.Created($"/api/orders/{response.Id}", response);
+        });
+    }
+}
 ```
 
 ### Feature Scaffold — Clean Architecture (CA)
@@ -118,12 +128,12 @@ internal sealed class CreateOrderHandler(IAppDbContext db, TimeProvider clock)
 }
 ```
 ```csharp
-// Api/Endpoints/OrderEndpoints.cs
+// Api/Endpoints/OrderEndpoints.cs — implements IEndpointGroup for auto-discovery
 namespace MyApp.Api.Endpoints;
 
-public static class OrderEndpoints
+public sealed class OrderEndpoints : IEndpointGroup
 {
-    public static void MapOrderEndpoints(this IEndpointRouteBuilder app)
+    public void Map(IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("/api/orders").WithTags("Orders");
         group.MapPost("/", async (CreateOrderCommand cmd, ISender sender, CancellationToken ct) =>
@@ -292,7 +302,7 @@ public sealed class CreateOrderTests(TestWebAppFactory factory) : IClassFixture<
 Complete module setup with its own DbContext, DI, and integration events:
 
 ```csharp
-// Modules/Inventory/InventoryModule.cs
+// Modules/Inventory/InventoryModule.cs — DI registration only
 namespace MyApp.Modules.Inventory;
 
 public static class InventoryModule
@@ -304,12 +314,18 @@ public static class InventoryModule
         services.AddScoped<StockService>();
         return services;
     }
+}
+```
+```csharp
+// Modules/Inventory/Endpoints/InventoryEndpoints.cs — auto-discovered via IEndpointGroup
+namespace MyApp.Modules.Inventory.Endpoints;
 
-    public static IEndpointRouteBuilder MapInventoryEndpoints(this IEndpointRouteBuilder app)
+public sealed class InventoryEndpoints : IEndpointGroup
+{
+    public void Map(IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("/api/inventory").WithTags("Inventory");
         // Map module-specific endpoints here
-        return app;
     }
 }
 ```
@@ -336,52 +352,34 @@ internal sealed class InventoryDbContext(DbContextOptions<InventoryDbContext> op
 ```csharp
 // BAD — Generating code without knowing if project uses VSA, CA, or DDD
 public class CreateOrderHandler { /* random structure */ }
-```
-```csharp
-// GOOD — Ask first, then generate matching the architecture
-// "What architecture does this project use? I see feature folders, so I'll scaffold using VSA patterns."
+
+// GOOD — Ask first: "I see feature folders, so I'll scaffold using VSA patterns."
 public static class CreateOrder { /* VSA single-file feature */ }
 ```
 
 ### Feature Without Tests
 
-```csharp
-// BAD — Generating only the feature, leaving tests for "later"
-// Later never comes. Ship features with tests.
-```
-```csharp
-// GOOD — Feature + test as a single deliverable
-// CreateOrder.cs + CreateOrderTests.cs always scaffolded together
-```
+Always scaffold feature + test as a single unit. `CreateOrder.cs` + `CreateOrderTests.cs` are never generated separately.
 
 ### Entity Without EF Configuration
 
 ```csharp
-// BAD — Entity with data annotations scattered in the class
-public class Product
-{
-    [Key] public Guid Id { get; set; }
-    [MaxLength(200)] public string Name { get; set; } = "";
-    [Column(TypeName = "decimal(18,2)")] public decimal Price { get; set; }
-}
-```
-```csharp
-// GOOD — Clean entity + separate IEntityTypeConfiguration<T>
-public sealed class Product { /* Clean domain model, no attributes */ }
-internal sealed class ProductConfiguration : IEntityTypeConfiguration<Product> { /* All EF config here */ }
+// BAD — data annotations scattered in entity
+public class Product { [Key] public Guid Id { get; set; } [MaxLength(200)] public string Name { get; set; } = ""; }
+
+// GOOD — clean entity + separate IEntityTypeConfiguration<T>
+public sealed class Product { /* No attributes */ }
+internal sealed class ProductConfiguration : IEntityTypeConfiguration<Product> { /* All EF config */ }
 ```
 
 ### Anemic DTOs That Mirror Entities 1:1
 
 ```csharp
-// BAD — DTO is just a copy of the entity with no purpose
-public record ProductDto(Guid Id, string Name, string Sku, decimal Price, bool IsActive,
-    DateTime CreatedAt, DateTime? UpdatedAt, string? UpdatedBy);
-```
-```csharp
-// GOOD — Response DTO shaped for the consumer's needs
+// BAD — DTO mirrors entity with no purpose
+public record ProductDto(Guid Id, string Name, string Sku, decimal Price, bool IsActive, DateTime CreatedAt, DateTime? UpdatedAt);
+
+// GOOD — response shaped for the consumer
 public record ProductSummary(Guid Id, string Name, decimal Price);
-public record ProductDetail(Guid Id, string Name, string Sku, decimal Price, bool IsActive);
 ```
 
 ## Decision Guide

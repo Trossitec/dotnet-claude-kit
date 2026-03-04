@@ -9,7 +9,7 @@ This is a .NET 10 REST API. Choose an architecture that fits your domain complex
 ## Tech Stack
 
 - **.NET 10** / C# 14
-- **ASP.NET Core Minimal APIs** — endpoint routing with `MapGroup`
+- **ASP.NET Core Minimal APIs** — `IEndpointGroup` per feature with `app.MapEndpoints()` auto-discovery
 - **Entity Framework Core** — default ORM with PostgreSQL/SQL Server
 - **MediatR** (or Wolverine or raw handlers) — command/query dispatch
 - **FluentValidation** — request validation
@@ -145,6 +145,8 @@ dotnet format --verify-no-changes
 
 Do NOT generate code that:
 
+- Defines endpoints in Program.cs — use `IEndpointGroup` per feature with `app.MapEndpoints()` auto-discovery
+- Manually wires MapGroup calls in Program.cs — Program.cs should never change when adding endpoints
 - Uses `DateTime.Now` — use `TimeProvider` injection instead
 - Creates `new HttpClient()` — use `IHttpClientFactory`
 - Uses `async void` — always return `Task`

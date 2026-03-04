@@ -66,6 +66,7 @@ public sealed class OrderService(AppDbContext db)
 public interface IRepository<T> { Task<T?> GetByIdAsync(Guid id); }
 ```
 
+- **Every endpoint group gets its own file implementing `IEndpointGroup`.** Never define endpoints in Program.cs. Use `app.MapEndpoints()` for auto-discovery. Program.cs never changes when adding endpoints.
 - **Feature folders over layer folders.** Vertical slices keep related code together, reducing cross-cutting file changes.
 - **Dependency direction is inward.** Domain depends on nothing. Application depends on Domain. Infrastructure depends on Application. Presentation depends on Application. Never reverse.
 - **Module boundaries enforced through project references.** Use integration events or shared contracts for cross-module communication.

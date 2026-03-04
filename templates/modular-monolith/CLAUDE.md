@@ -9,7 +9,7 @@ This is a .NET 10 modular monolith with each module using its own internal archi
 ## Tech Stack
 
 - **.NET 10** / C# 14
-- **ASP.NET Core Minimal APIs** — endpoint routing with `MapGroup`, one route group per module
+- **ASP.NET Core Minimal APIs** — `IEndpointGroup` per feature with `app.MapEndpoints()` auto-discovery, one endpoint group per feature per module
 - **Entity Framework Core** — one DbContext per module, PostgreSQL/SQL Server
 - **MassTransit** — inter-module messaging via integration events, transactional outbox
 - **MediatR** (or Wolverine or raw handlers) — intra-module command/query dispatch
@@ -78,13 +78,15 @@ public static class OrdersModule
         return services;
     }
 
-    public static IEndpointRouteBuilder MapOrdersModule(this IEndpointRouteBuilder app)
-    {
-        app.MapGroup("/api/orders")
-            .WithTags("Orders")
-            .MapOrderEndpoints();
+}
 
-        return app;
+// Modules/Orders/Endpoints/OrderEndpoints.cs — auto-discovered via IEndpointGroup
+public sealed class OrderEndpoints : IEndpointGroup
+{
+    public void Map(IEndpointRouteBuilder app)
+    {
+        var group = app.MapGroup("/api/orders").WithTags("Orders");
+        // Map order endpoints here
     }
 }
 ```
@@ -229,6 +231,7 @@ dotnet format --verify-no-changes
 
 Do NOT generate code that:
 
+- Defines endpoints in Program.cs — use `IEndpointGroup` per feature with `app.MapEndpoints()` auto-discovery
 - Uses `DateTime.Now` — use `TimeProvider` injection instead
 - Creates `new HttpClient()` — use `IHttpClientFactory`
 - Uses `async void` — always return `Task`

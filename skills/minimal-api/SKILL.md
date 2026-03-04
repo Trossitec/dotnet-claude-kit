@@ -21,31 +21,53 @@ description: >
 
 ## Patterns
 
-### Route Groups
+### Endpoint Group Auto-Discovery (Required Pattern)
 
-Organize endpoints into logical groups with shared prefixes, filters, and metadata.
+Every endpoint group lives in its own file and implements `IEndpointGroup`. A single `app.MapEndpoints()` call in `Program.cs` discovers and registers all groups automatically. **Program.cs never changes when you add new endpoint groups.**
 
 ```csharp
-// Program.cs
+// Extensions/IEndpointGroup.cs
+public interface IEndpointGroup
+{
+    void Map(IEndpointRouteBuilder app);
+}
+```
+
+```csharp
+// Extensions/EndpointExtensions.cs
+public static class EndpointExtensions
+{
+    public static WebApplication MapEndpoints(this WebApplication app)
+    {
+        var groups = typeof(Program).Assembly
+            .GetTypes()
+            .Where(t => t.IsAssignableTo(typeof(IEndpointGroup)) && !t.IsInterface && !t.IsAbstract)
+            .Select(Activator.CreateInstance)
+            .Cast<IEndpointGroup>();
+
+        foreach (var group in groups)
+            group.Map(app);
+
+        return app;
+    }
+}
+```
+
+```csharp
+// Program.cs — this NEVER changes when adding endpoints
 var app = builder.Build();
-
-app.MapGroup("/api/orders")
-    .WithTags("Orders")
-    .MapOrderEndpoints();
-
-app.MapGroup("/api/products")
-    .WithTags("Products")
-    .MapProductEndpoints();
-
+app.MapEndpoints();
 app.Run();
 ```
 
 ```csharp
-// Features/Orders/OrderEndpoints.cs
-public static class OrderEndpoints
+// Features/Orders/OrderEndpoints.cs — one file per endpoint group
+public sealed class OrderEndpoints : IEndpointGroup
 {
-    public static RouteGroupBuilder MapOrderEndpoints(this RouteGroupBuilder group)
+    public void Map(IEndpointRouteBuilder app)
     {
+        var group = app.MapGroup("/api/orders").WithTags("Orders");
+
         group.MapPost("/", CreateOrder)
             .WithName("CreateOrder")
             .WithSummary("Create a new order")
@@ -61,8 +83,6 @@ public static class OrderEndpoints
         group.MapGet("/", ListOrders)
             .WithName("ListOrders")
             .Produces<PagedList<OrderResponse>>();
-
-        return group;
     }
 
     private static async Task<Results<Created<OrderResponse>, ValidationProblem>> CreateOrder(
@@ -173,7 +193,7 @@ group.AddEndpointFilter<LoggingFilter>();
 .NET 10 has built-in OpenAPI support. Use it instead of Swashbuckle.
 
 ```csharp
-// Program.cs
+// Program.cs — service registration only, no endpoint wiring
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
@@ -182,6 +202,7 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+app.MapEndpoints(); // auto-discovers all IEndpointGroup implementations
 
 // Endpoint metadata enriches the OpenAPI spec
 group.MapPost("/", CreateOrder)
@@ -205,10 +226,10 @@ builder.Services.AddRateLimiter(options =>
     });
 });
 
-// Apply to group
-app.MapGroup("/api")
-    .RequireRateLimiting("api")
-    .MapOrderEndpoints();
+// Apply inside an IEndpointGroup.Map method
+var group = app.MapGroup("/api/orders")
+    .WithTags("Orders")
+    .RequireRateLimiting("api");
 ```
 
 ### Output Caching
@@ -228,19 +249,23 @@ group.MapGet("/{id:guid}", GetOrder)
 
 ## Anti-patterns
 
-### Don't Scatter Endpoints in Program.cs
+### Don't Put Endpoints in Program.cs
 
 ```csharp
-// BAD — all endpoints in Program.cs
+// BAD — endpoints scattered in Program.cs
 app.MapGet("/orders", async (AppDbContext db) => await db.Orders.ToListAsync());
 app.MapGet("/orders/{id}", async (Guid id, AppDbContext db) => await db.Orders.FindAsync(id));
 app.MapPost("/orders", async (Order order, AppDbContext db) => { /* ... */ });
 app.MapGet("/products", async (AppDbContext db) => await db.Products.ToListAsync());
-// 30 more endpoints...
 
-// GOOD — grouped in extension methods
+// ALSO BAD — manual MapGroup calls in Program.cs (grows with every feature)
 app.MapGroup("/api/orders").WithTags("Orders").MapOrderEndpoints();
 app.MapGroup("/api/products").WithTags("Products").MapProductEndpoints();
+app.MapGroup("/api/customers").WithTags("Customers").MapCustomerEndpoints();
+// Program.cs grows every time you add a feature...
+
+// GOOD — auto-discovered, Program.cs never changes
+app.MapEndpoints(); // discovers all IEndpointGroup implementations
 ```
 
 ### Don't Use Untyped Results
@@ -283,7 +308,7 @@ app.MapGet("/orders/{id}", async (Guid id, AppDbContext db) =>
 
 | Scenario | Recommendation |
 |----------|---------------|
-| New HTTP API | Minimal APIs with `MapGroup` |
+| New HTTP API | `IEndpointGroup` per feature + `app.MapEndpoints()` auto-discovery |
 | Existing MVC project | Keep controllers, migrate incrementally |
 | OpenAPI documentation | Use `TypedResults` + `.WithName()` + `.WithSummary()` |
 | Request validation | Endpoint filter with FluentValidation |
