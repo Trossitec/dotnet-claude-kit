@@ -25,7 +25,7 @@ We evaluated these patterns against the following criteria:
 ### Observations
 
 - **Clean Architecture** requires touching 4+ projects and 6+ files to add a single endpoint. The abstraction layers (IRepository, IUnitOfWork) often add indirection without value in small-to-medium apps. However, it shines in complex domains with rich business logic that benefits from strict dependency inversion.
-- **Vertical Slice Architecture** requires 1-2 files per feature. Related code lives together. Adding a feature is a self-contained operation. It maps naturally to minimal API endpoint groups and MediatR/Wolverine handlers.
+- **Vertical Slice Architecture** requires 1-2 files per feature. Related code lives together. Adding a feature is a self-contained operation. It maps naturally to minimal API endpoint groups and Mediator/Wolverine handlers.
 - **N-Tier** leads to "God service" classes that accumulate methods for every operation on an entity. It does not scale well and encourages tight coupling between layers.
 
 ### Guiding principle
@@ -43,14 +43,14 @@ Features/
   Orders/
     CreateOrder/
       CreateOrderEndpoint.cs    # Minimal API endpoint
-      CreateOrderHandler.cs     # Business logic (MediatR, Wolverine, or raw)
+      CreateOrderHandler.cs     # Business logic (Mediator, Wolverine, or raw)
       CreateOrderRequest.cs     # Input DTO
       CreateOrderValidator.cs   # FluentValidation rules
     GetOrder/
       ...
 ```
 
-The handler approach (MediatR, Wolverine, or plain handler classes) is left to the user's choice. dotnet-claude-kit provides patterns for all three.
+The handler approach (Mediator, Wolverine, or plain handler classes) is left to the user's choice. dotnet-claude-kit provides patterns for all three.
 
 ### When to deviate
 

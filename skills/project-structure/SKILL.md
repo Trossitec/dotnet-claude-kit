@@ -72,7 +72,8 @@ Shared build properties applied to all projects in the directory tree.
 
   <ItemGroup>
     <!-- ASP.NET Core -->
-    <PackageVersion Include="MediatR" Version="13.0.0" />
+    <PackageVersion Include="Mediator.Abstractions" Version="3.0.0" />
+    <PackageVersion Include="Mediator.SourceGenerator" Version="3.0.0" />
     <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.0.0" />
 
     <!-- Data -->
@@ -99,7 +100,8 @@ Shared build properties applied to all projects in the directory tree.
 
   <ItemGroup>
     <!-- No Version attribute — managed centrally -->
-    <PackageReference Include="MediatR" />
+    <PackageReference Include="Mediator.Abstractions" />
+    <PackageReference Include="Mediator.SourceGenerator" />
     <PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
@@ -172,12 +174,12 @@ Or in Directory.Build.props:
 
 ```xml
 <!-- BAD — version in every .csproj, version drift -->
-<PackageReference Include="MediatR" Version="12.0.0" />  <!-- in Project A -->
-<PackageReference Include="MediatR" Version="13.0.0" />  <!-- in Project B -->
+<PackageReference Include="Mediator.Abstractions" Version="2.0.0" />  <!-- in Project A -->
+<PackageReference Include="Mediator.Abstractions" Version="3.0.0" />  <!-- in Project B -->
 
 <!-- GOOD — central management, one version -->
-<!-- Directory.Packages.props: <PackageVersion Include="MediatR" Version="13.0.0" /> -->
-<!-- .csproj: <PackageReference Include="MediatR" /> -->
+<!-- Directory.Packages.props: <PackageVersion Include="Mediator.Abstractions" Version="3.0.0" /> -->
+<!-- .csproj: <PackageReference Include="Mediator.Abstractions" /> -->
 ```
 
 ### Don't Repeat Build Properties

@@ -66,7 +66,7 @@ Ask about specific technology choices:
 - **Database**: PostgreSQL, SQL Server, SQLite, or none yet
 - **Auth**: JWT, OIDC, Cookie, or none yet
 - **Caching**: HybridCache, Redis, or none yet
-- **Messaging**: MassTransit, or none yet
+- **Messaging**: Wolverine, MassTransit, or none yet
 - **Testing**: Confirm xUnit + Testcontainers defaults
 
 ### Step 4: Generate CLAUDE.md

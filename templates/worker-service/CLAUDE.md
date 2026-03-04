@@ -10,7 +10,7 @@ This is a .NET 10 Worker Service that runs long-lived background tasks. It may p
 
 - **.NET 10** / C# 14
 - **BackgroundService / IHostedService** — hosting model for background workers
-- **MassTransit** — message consumption from RabbitMQ or Azure Service Bus
+- **Wolverine** (or MassTransit) — message consumption from RabbitMQ or Azure Service Bus
 - **Serilog** — structured logging with console and sink targets
 - **Hangfire** (optional) — recurring/scheduled job processing
 - **Entity Framework Core** (optional) — data access with PostgreSQL/SQL Server
@@ -23,7 +23,7 @@ This is a .NET 10 Worker Service that runs long-lived background tasks. It may p
 src/
   [ProjectName].Worker/
     Consumers/
-      [Message]Consumer.cs          # MassTransit message consumers
+      [Message]Consumer.cs          # Wolverine/MassTransit message consumers
     Jobs/
       [JobName]Job.cs               # Scheduled/recurring job logic
     Workers/
@@ -83,19 +83,22 @@ public sealed class OrderProcessingWorker(
 }
 ```
 
-### MassTransit Consumer Convention
+### Message Consumer Convention
 
-Each consumer lives in its own file under `Consumers/`:
+Each consumer lives in its own file under `Consumers/`. Wolverine uses convention-based handlers (no interface); MassTransit uses `IConsumer<T>`:
 
 ```csharp
-public sealed class OrderCreatedConsumer(
-    IOrderService orderService,
-    ILogger<OrderCreatedConsumer> logger) : IConsumer<OrderCreated>
+// Wolverine — convention-based, no interface needed
+public static class OrderCreatedHandler
 {
-    public async Task Consume(ConsumeContext<OrderCreated> context)
+    public static async Task Handle(
+        OrderCreated message,
+        IOrderService orderService,
+        ILogger logger,
+        CancellationToken ct)
     {
-        logger.LogInformation("Processing OrderCreated {OrderId}", context.Message.OrderId);
-        await orderService.HandleOrderCreatedAsync(context.Message, context.CancellationToken);
+        logger.LogInformation("Processing OrderCreated {OrderId}", message.OrderId);
+        await orderService.HandleOrderCreatedAsync(message, ct);
     }
 }
 ```
@@ -117,7 +120,7 @@ Load these dotnet-claude-kit skills for context:
 
 - `modern-csharp` — C# 14 language features and idioms
 - `architecture-advisor` — Architecture guidance for structuring worker internals
-- `messaging` — MassTransit consumers, outbox, saga patterns, broker configuration
+- `messaging` — Wolverine/MassTransit consumers, outbox, saga patterns, broker configuration
 - `logging` — Serilog, structured logging, OpenTelemetry
 - `docker` — Multi-stage Dockerfile, health checks, Docker Compose
 - `configuration` — Options pattern, secrets management, environment-specific config
@@ -191,4 +194,4 @@ Do NOT generate code that:
 - Uses string interpolation in log messages — Use structured logging templates (`LogInformation("Processing {OrderId}", id)`)
 - Catches bare `Exception` without logging — Always log the exception; let fatal errors propagate
 - Creates fire-and-forget tasks with `_ = DoWorkAsync()` — Always await or track tasks to observe exceptions
-- Registers MassTransit consumers as singletons — Consumers must be scoped or transient
+- Registers message consumers as singletons — Consumers must be scoped or transient

@@ -17,7 +17,7 @@ Use to discover testable interfaces and abstract classes — helps generate comp
 
 ```
 find_implementations(interfaceName: "IOrderRepository") → find all implementations to test
-find_implementations(interfaceName: "IRequestHandler") → find all MediatR handlers
+find_implementations(interfaceName: "IRequestHandler") → find all Mediator/MediatR handlers
 ```
 
 ### Supporting Tools

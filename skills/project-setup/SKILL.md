@@ -44,7 +44,7 @@ Ask about each dimension with a recommended default:
 | Database | PostgreSQL, SQL Server, SQLite | PostgreSQL |
 | Auth | JWT Bearer, OIDC (Keycloak/Auth0), None | JWT Bearer |
 | Caching | HybridCache, Redis, None | HybridCache |
-| Messaging | MassTransit (RabbitMQ), None | None (add later) |
+| Messaging | Wolverine (RabbitMQ), MassTransit, None | None (add later) |
 | Observability | Serilog + OpenTelemetry, Basic logging | Serilog + OTEL |
 | Resilience | Polly v8 pipelines, Basic retry | Polly v8 |
 

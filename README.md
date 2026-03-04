@@ -265,7 +265,7 @@ Code-heavy reference files that teach Claude .NET best practices. Each skill is 
 | **Core Language** | [modern-csharp](skills/modern-csharp/SKILL.md) | Primary constructors, collection expressions, `field` keyword, records, pattern matching, spans |
 | **Web / API** | [minimal-api](skills/minimal-api/SKILL.md), [api-versioning](skills/api-versioning/SKILL.md), [authentication](skills/authentication/SKILL.md) | `MapGroup`, `TypedResults`, endpoint filters, JWT/OIDC, Asp.Versioning |
 | **Data** | [ef-core](skills/ef-core/SKILL.md) | No repository wrappers. Compiled queries, interceptors, `ExecuteUpdateAsync`, value converters |
-| **Resilience** | [error-handling](skills/error-handling/SKILL.md), [resilience](skills/resilience/SKILL.md), [caching](skills/caching/SKILL.md), [messaging](skills/messaging/SKILL.md) | Result pattern, Polly v8 pipelines, `HybridCache`, MassTransit, outbox, sagas |
+| **Resilience** | [error-handling](skills/error-handling/SKILL.md), [resilience](skills/resilience/SKILL.md), [caching](skills/caching/SKILL.md), [messaging](skills/messaging/SKILL.md) | Result pattern, Polly v8 pipelines, `HybridCache`, Wolverine/MassTransit, outbox, sagas |
 | **Observability** | [logging](skills/logging/SKILL.md) | Serilog structured logging, OpenTelemetry, correlation IDs |
 | **Testing** | [testing](skills/testing/SKILL.md) | xUnit v3, `WebApplicationFactory`, `Testcontainers`, Verify snapshots |
 | **DevOps** | [docker](skills/docker/SKILL.md), [ci-cd](skills/ci-cd/SKILL.md), [aspire](skills/aspire/SKILL.md) | Multi-stage builds, GitHub Actions, .NET Aspire orchestration |
@@ -300,9 +300,9 @@ Drop-in `CLAUDE.md` files that configure Claude for specific project types. Copy
 | Template | For | Includes |
 |----------|-----|----------|
 | [web-api](templates/web-api/) | REST APIs, microservices | Architecture options (VSA/CA/DDD), minimal APIs, EF Core, testing |
-| [modular-monolith](templates/modular-monolith/) | Multi-module systems | Module boundaries, per-module DbContext, MassTransit integration events |
+| [modular-monolith](templates/modular-monolith/) | Multi-module systems | Module boundaries, per-module DbContext, Wolverine/MassTransit integration events |
 | [blazor-app](templates/blazor-app/) | Blazor Server / WASM / Auto | Component organization, render mode strategy, bUnit testing |
-| [worker-service](templates/worker-service/) | Background processing | BackgroundService patterns, MassTransit consumers, proper cancellation |
+| [worker-service](templates/worker-service/) | Background processing | BackgroundService patterns, Wolverine/MassTransit consumers, proper cancellation |
 | [class-library](templates/class-library/) | NuGet packages, shared libraries | Public API design, XML docs, semantic versioning, SourceLink |
 
 ## Roslyn MCP Server

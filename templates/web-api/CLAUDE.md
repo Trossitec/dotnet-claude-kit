@@ -11,7 +11,7 @@ This is a .NET 10 REST API. Choose an architecture that fits your domain complex
 - **.NET 10** / C# 14
 - **ASP.NET Core Minimal APIs** — `IEndpointGroup` per feature with `app.MapEndpoints()` auto-discovery
 - **Entity Framework Core** — default ORM with PostgreSQL/SQL Server
-- **MediatR** (or Wolverine or raw handlers) — command/query dispatch
+- **Mediator** (source-generated, MIT) or Wolverine or raw handlers — command/query dispatch
 - **FluentValidation** — request validation
 - **Serilog** — structured logging
 - **xUnit v3** + **Testcontainers** — testing
@@ -29,7 +29,7 @@ src/
       [Feature]/
         [Operation].cs          # Command/Query + Handler + Response
     Common/
-      Behaviors/                # MediatR pipeline behaviors
+      Behaviors/                # Mediator pipeline behaviors
       Persistence/              # DbContext, configurations
       Extensions/               # Service registration helpers
     Program.cs

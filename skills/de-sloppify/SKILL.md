@@ -163,7 +163,7 @@ app.MapGet("/orders/{id}", async (Guid id, AppDbContext db, CancellationToken ct
 
 Common propagation points:
 - Minimal API endpoints: add `CancellationToken ct` parameter (auto-bound by ASP.NET Core)
-- MediatR handlers: already provided in `Handle(TRequest, CancellationToken)`
+- Mediator/MediatR handlers: already provided in `Handle(TRequest, CancellationToken)`
 - EF Core: `SaveChangesAsync(ct)`, `ToListAsync(ct)`, `FindAsync([key], ct)`
 - HttpClient: `GetAsync(url, ct)`, `PostAsync(url, content, ct)`
 

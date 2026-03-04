@@ -5,7 +5,7 @@
 Use this template when you're building:
 - A background worker that processes messages from RabbitMQ or Azure Service Bus
 - A hosted service that performs periodic or scheduled work
-- A long-running process that reacts to events (MassTransit consumers)
+- A long-running process that reacts to events (Wolverine or MassTransit consumers)
 - A job processing service using Hangfire or similar
 - A headless service with no HTTP endpoints (aside from optional health checks)
 
@@ -21,7 +21,7 @@ Use this template when you're building:
 
 This template configures Claude Code to:
 - Structure workers with proper `BackgroundService` inheritance and cancellation
-- Use MassTransit for message consumption with correctly scoped consumers
+- Use Wolverine or MassTransit for message consumption with correctly scoped consumers
 - Create service scopes inside long-running loops to avoid captive dependency issues
 - Follow structured logging with Serilog
 - Write tests with xUnit v3 and Testcontainers
@@ -32,11 +32,11 @@ This template configures Claude Code to:
 
 ### Message Broker Only (No Scheduled Jobs)
 
-Remove the `Jobs/` folder from the architecture section and remove the Hangfire reference from the tech stack. Focus on the `Consumers/` folder for MassTransit consumers.
+Remove the `Jobs/` folder from the architecture section and remove the Hangfire reference from the tech stack. Focus on the `Consumers/` folder for Wolverine/MassTransit consumers.
 
 ### Scheduled Jobs Only (No Message Broker)
 
-Remove the `Consumers/` folder from the architecture section and remove MassTransit from the tech stack. Use the `Workers/` folder for `BackgroundService` implementations with `Task.Delay`-based loops, or add Hangfire for cron-scheduled recurring jobs.
+Remove the `Consumers/` folder from the architecture section and remove Wolverine/MassTransit from the tech stack. Use the `Workers/` folder for `BackgroundService` implementations with `Task.Delay`-based loops, or add Hangfire for cron-scheduled recurring jobs.
 
 ### Adding Health Checks
 

@@ -15,7 +15,7 @@ Use this template when you're building:
 2. Replace `[ProjectName]` with your actual project name
 3. Replace `[Module]` references with your actual module names (e.g., Orders, Catalog, Identity)
 4. Update the **Tech Stack** section to match your dependencies
-5. Choose your handler approach (MediatR, Wolverine, or raw handlers) and update the feature file convention accordingly
+5. Choose your handler approach (Mediator, Wolverine, or raw handlers) and update the feature file convention accordingly
 6. Remove any skills references that don't apply to your project
 
 ## What's Included
@@ -25,7 +25,7 @@ This template configures Claude Code to:
 - Follow a module-per-project structure with each module using its own internal architecture
 - Enforce strict module boundaries — no direct cross-module references
 - Use one DbContext per module with separate database schemas
-- Use MassTransit integration events for inter-module communication with the transactional outbox
+- Use Wolverine or MassTransit integration events for inter-module communication with the transactional outbox
 - Keep the Shared project thin — only contracts, primitives, and cross-cutting infrastructure
 - Use .NET 10 / C# 14 modern patterns
 - Use `IEndpointGroup` per feature with `app.MapEndpoints()` auto-discovery — no endpoints in Program.cs
@@ -37,19 +37,19 @@ This template configures Claude Code to:
 
 ### Switching Handler Approach
 
-The template defaults to MediatR for intra-module dispatch. To switch:
+The template defaults to Mediator (source-generated, MIT) for intra-module dispatch. To switch:
 
-**Wolverine:** Remove `IRequest<T>` references, use convention-based `Handle` methods. Wolverine also doubles as a message bus, which can replace MassTransit for inter-module messaging. See the `vertical-slice` and `messaging` skills.
+**Wolverine:** Remove `IRequest<T>` references, use convention-based `Handle` methods. Wolverine also doubles as a message bus, which can replace a separate messaging library for inter-module messaging. See the `vertical-slice` and `messaging` skills.
 
-**Raw handlers:** Remove MediatR entirely, register handler classes in DI. See the `vertical-slice` skill for raw handler patterns.
+**Raw handlers:** Remove Mediator entirely, register handler classes in DI. See the `vertical-slice` skill for raw handler patterns.
 
 ### Switching Messaging
 
-The template defaults to MassTransit for inter-module events. Alternatives:
+The template defaults to Wolverine for inter-module events (MIT licensed). Alternatives:
 
-**Wolverine:** If you chose Wolverine for handlers, you can also use it as the message bus, simplifying the stack to a single library for both intra-module dispatch and inter-module messaging.
+**MassTransit:** The most mature message bus for .NET with saga state machines and extensive features. Note: requires a commercial license from v9.
 
-**In-process mediator:** For simpler applications where all modules run in the same process and you don't need durable messaging, you can use MediatR notifications. Note that this sacrifices the reliability of the transactional outbox.
+**In-process mediator:** For simpler applications where all modules run in the same process and you don't need durable messaging, you can use Mediator notifications. Note that this sacrifices the reliability of the transactional outbox.
 
 ### Adding Modules
 

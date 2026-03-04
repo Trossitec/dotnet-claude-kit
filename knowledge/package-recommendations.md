@@ -29,17 +29,26 @@ The version ranges below (e.g., "13.x") indicate the **minimum recommended major
 
 ## Mediator / In-Process Messaging
 
-### MediatR
+### Mediator (Recommended Default)
 
-- **Package:** `MediatR` (13.x)
-- **Rationale:** The most widely adopted mediator in .NET. Excellent pipeline behavior support (validation, logging, transactions). Massive community, well-documented. Works well with any architecture — VSA feature handlers, Clean Architecture use cases, or DDD application services.
-- **When NOT to use:** If your application has fewer than 5 features and the indirection adds complexity without benefit. If you need message durability or distributed messaging, MediatR is in-process only -- use MassTransit or Wolverine instead. If raw performance is critical and you want to avoid the reflection/DI overhead, use plain handler classes injected directly.
+- **Package:** `Mediator.Abstractions` + `Mediator.SourceGenerator` (3.x)
+- **License:** MIT (free, no commercial restrictions)
+- **Rationale:** Source-generated mediator with a near-identical API to MediatR (`IRequest<T>`, `IRequestHandler<T,R>`, `IPipelineBehavior<T,R>`, `ISender`). No reflection, Native AOT compatible, and significantly faster than MediatR in benchmarks. Registration: `services.AddMediator()`. 5M+ NuGet downloads, actively maintained.
+- **When NOT to use:** If your application has fewer than 5 features and the indirection adds complexity without benefit. If you need message durability or distributed messaging — use Wolverine instead. If you want the absolute simplest approach, use raw handler classes injected directly.
 
 ### Wolverine
 
 - **Package:** `WolverineFx` (3.x)
-- **Rationale:** Combines mediator + messaging in one library. Built-in outbox, saga support, and direct integration with RabbitMQ/Azure Service Bus. Faster than MediatR for high-throughput scenarios due to source-generated dispatch. Good choice if you want a single library for both in-process and distributed messaging.
-- **When NOT to use:** If your team is already invested in MediatR + MassTransit and the migration cost is not justified. If you want maximum community support and StackOverflow answers (MediatR has a larger ecosystem). If you only need a simple mediator without messaging.
+- **License:** MIT (free, no commercial restrictions)
+- **Rationale:** Combines mediator + messaging in one library. Built-in outbox, saga support, and direct integration with RabbitMQ/Azure Service Bus. Convention-based handlers (no interfaces). Good choice if you want a single library for both in-process and distributed messaging, avoiding the need for a separate MassTransit dependency.
+- **When NOT to use:** If you only need a simple in-process mediator without messaging (use Mediator instead). If your team prefers explicit interfaces over convention-based discovery.
+
+### MediatR (Commercial License)
+
+- **Package:** `MediatR` (13.x)
+- **License:** RPL-1.5 + commercial dual license since v13. **Requires a paid license for most commercial use.** Previous versions (≤12.x) remain MIT but are unsupported.
+- **Rationale:** The most widely adopted mediator in .NET with the largest community. Excellent pipeline behavior support. Consider only if your organization already has a MediatR commercial license.
+- **When NOT to use:** For new projects — use `Mediator` (source-generated, MIT, faster) or Wolverine instead. The commercial license adds cost without technical advantage over the MIT alternatives.
 
 ---
 
@@ -48,7 +57,7 @@ The version ranges below (e.g., "13.x") indicate the **minimum recommended major
 ### FluentValidation
 
 - **Package:** `FluentValidation` (12.x), `FluentValidation.DependencyInjectionExtensions`
-- **Rationale:** Expressive, testable validation rules. Integrates cleanly with MediatR pipeline behaviors. Keeps validation logic out of endpoint/controller code. Supports async rules for database-dependent validation.
+- **Rationale:** Expressive, testable validation rules. Integrates cleanly with Mediator/MediatR pipeline behaviors. Keeps validation logic out of endpoint/controller code. Supports async rules for database-dependent validation.
 - **When NOT to use:** For trivial DTOs where `System.ComponentModel.DataAnnotations` or minimal API binding validation is sufficient. If you are using Blazor EditForm with DataAnnotations and do not need server-side revalidation. If you want to minimize dependencies in a small microservice.
 
 ---
@@ -115,11 +124,19 @@ The version ranges below (e.g., "13.x") indicate the **minimum recommended major
 
 ## Messaging / Event Bus
 
-### MassTransit
+### Wolverine (Recommended Default)
+
+- **Package:** `WolverineFx` (3.x), transport packages (e.g., `WolverineFx.RabbitMQ`, `WolverineFx.AzureServiceBus`)
+- **License:** MIT (free, no commercial restrictions)
+- **Rationale:** Modern message bus with built-in outbox, saga support, and direct integration with RabbitMQ/Azure Service Bus. Also doubles as an in-process mediator, letting you use a single library for both. Transport-agnostic, convention-based handlers, and source-generated dispatch for high performance. If you already use Wolverine as your mediator, this is the natural choice for messaging too.
+- **When NOT to use:** For very simple queue consumption where the raw Azure SDK or RabbitMQ client is sufficient. If your team is heavily invested in MassTransit patterns (state machines, consumer definitions) and migration cost is not justified.
+
+### MassTransit (Commercial License from v9)
 
 - **Package:** `MassTransit` (9.x), transport packages (e.g., `MassTransit.RabbitMQ`, `MassTransit.Azure.ServiceBus.Core`)
-- **Rationale:** The most mature message bus abstraction for .NET. Transactional outbox, sagas, state machines, retry policies, and dead-letter handling built in. Transport-agnostic (RabbitMQ, Azure Service Bus, Amazon SQS, in-memory for testing). Excellent Aspire integration.
-- **When NOT to use:** If you only need simple in-process pub/sub (use MediatR or `IObservable`). For very simple queue consumption where the raw Azure SDK or RabbitMQ client is sufficient and you do not need saga/outbox. If you are using Wolverine for both mediator and messaging (avoid two overlapping abstractions).
+- **License:** **Commercial license required from v9** (released Q1 2026). v8 remains Apache 2.0 with security patches through end of 2026.
+- **Rationale:** The most mature message bus abstraction for .NET. Transactional outbox, sagas, state machines, retry policies, and dead-letter handling built in. Excellent Aspire integration. Consider if your organization already has a MassTransit license or is on v8 and plans to stay.
+- **When NOT to use:** For new projects — use Wolverine instead (MIT, similar capabilities). If you are using Wolverine for both mediator and messaging (avoid two overlapping abstractions). If you only need simple in-process pub/sub.
 
 ---
 

@@ -142,7 +142,7 @@ public record PagedList<T>(List<T> Items, int TotalCount, int Page, int PageSize
 Separate files across layers. Domain → Application (Command + Handler + Validator) → Api (Endpoint):
 
 ```csharp
-// Application/Orders/CreateOrder/CreateOrderCommand.cs
+// Application/Orders/CreateOrder/CreateOrderCommand.cs — uses Mediator (source-generated, MIT)
 public record CreateOrderCommand(string CustomerId, List<OrderItemDto> Items) : IRequest<Result<CreateOrderResponse>>;
 public record CreateOrderResponse(Guid Id, decimal Total, DateTimeOffset CreatedAt);
 
@@ -150,7 +150,7 @@ public record CreateOrderResponse(Guid Id, decimal Total, DateTimeOffset Created
 internal sealed class CreateOrderHandler(IAppDbContext db, TimeProvider clock)
     : IRequestHandler<CreateOrderCommand, Result<CreateOrderResponse>>
 {
-    public async Task<Result<CreateOrderResponse>> Handle(CreateOrderCommand request, CancellationToken ct)
+    public async ValueTask<Result<CreateOrderResponse>> Handle(CreateOrderCommand request, CancellationToken ct)
     {
         var order = Order.Create(request.CustomerId, request.Items, clock.GetUtcNow());
         db.Orders.Add(order);

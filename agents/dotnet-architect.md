@@ -70,7 +70,7 @@ Key decisions:
 - Project and solution structure decisions
 - Feature folder organization
 - Module boundary definition
-- Handler pattern selection (MediatR vs Wolverine vs raw)
+- Handler pattern selection (Mediator vs Wolverine vs raw handlers)
 - Cross-cutting concern placement (Common/, Shared/)
 - .slnx and Directory.Build.props configuration
 

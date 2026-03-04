@@ -42,7 +42,7 @@ src/
   MyApp.Application/
     Common/
       Behaviors/
-        ValidationBehavior.cs     # MediatR pipeline
+        ValidationBehavior.cs     # Mediator pipeline behavior
       Interfaces/
         IAppDbContext.cs           # DbContext abstraction (preferred over repository)
     Orders/
@@ -112,12 +112,12 @@ public record CreateOrderCommand(
 
 public record OrderItemDto(string ProductId, int Quantity, decimal UnitPrice);
 
-// Application/Orders/Commands/CreateOrder/CreateOrderHandler.cs
+// Application/Orders/Commands/CreateOrder/CreateOrderHandler.cs — uses Mediator (source-generated, MIT)
 internal sealed class CreateOrderHandler(
     IAppDbContext db,
     TimeProvider clock) : IRequestHandler<CreateOrderCommand, Result<Guid>>
 {
-    public async Task<Result<Guid>> Handle(CreateOrderCommand request, CancellationToken ct)
+    public async ValueTask<Result<Guid>> Handle(CreateOrderCommand request, CancellationToken ct)
     {
         var order = Order.Create(
             request.CustomerId,
@@ -159,7 +159,7 @@ public record OrderDto(Guid Id, string CustomerId, decimal Total, string Status,
 // Application/Orders/Queries/GetOrder/GetOrderHandler.cs
 internal sealed class GetOrderHandler(IAppDbContext db) : IRequestHandler<GetOrderQuery, Result<OrderDto>>
 {
-    public async Task<Result<OrderDto>> Handle(GetOrderQuery request, CancellationToken ct)
+    public async ValueTask<Result<OrderDto>> Handle(GetOrderQuery request, CancellationToken ct)
     {
         var order = await db.Orders
             .Where(o => o.Id == request.OrderId)
@@ -354,6 +354,6 @@ public interface ICustomerRepository { Task<Customer?> GetByIdAsync(Guid id); }
 | When to use CA over VSA | Medium+ domain complexity, long-lived system, team familiar with layers |
 | When to add a Domain layer | Business rules involve invariants across entity groups |
 | IAppDbContext vs repositories | Prefer IAppDbContext; add repository only for complex reusable queries |
-| MediatR vs raw handlers in CA | MediatR for pipeline behaviors (validation, logging); raw handlers for simplicity |
+| Mediator vs raw handlers in CA | Mediator for pipeline behaviors (validation, logging); raw handlers for simplicity |
 | When to add Domain events | When side effects (notifications, audit) should be decoupled from the main flow |
 | Evolving from VSA to CA | When handlers start needing shared domain logic that does not belong in Common/ |

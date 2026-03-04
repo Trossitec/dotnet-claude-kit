@@ -127,7 +127,7 @@ dotnet build
 dotnet test
 
 # Major updates — one at a time with careful review
-dotnet add src/Api/Api.csproj package MassTransit --version 9.0.0
+dotnet add src/Api/Api.csproj package WolverineFx
 dotnet build  # Fix compilation errors
 dotnet test   # Fix behavioral changes
 ```
@@ -231,7 +231,7 @@ dotnet build  # 47 errors — which package caused this?
 
 ```bash
 # GOOD — One at a time, build after each
-dotnet add package MassTransit --version 9.0.0
+dotnet add package WolverineFx
 dotnet build && dotnet test  # ✅
 dotnet add package Serilog --version 5.0.0
 dotnet build && dotnet test  # ❌ — Serilog 5.0 broke the sink config

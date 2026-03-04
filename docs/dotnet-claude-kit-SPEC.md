@@ -13,7 +13,7 @@
 | **Target audience** | Open source for all .NET developers |
 | **Project types** | Framework-agnostic (Web API, Blazor, MAUI, modular monolith, libraries, workers) |
 | **Architecture default** | Advisor-driven — supports VSA, Clean Architecture, DDD, Modular Monolith (ADR-005) |
-| **VSA handler approach** | User's choice — provide patterns for MediatR, Wolverine, and raw handlers |
+| **VSA handler approach** | User's choice — provide patterns for Mediator, Wolverine, and raw handlers |
 | **Modular monolith** | Optional — show how to add modules, don't require it |
 | **Data access** | EF Core as the default ORM |
 | **Skills count at launch** | 15–20 high-quality, opinionated |
@@ -71,7 +71,7 @@ dotnet-claude-kit/
 │   │
 │   ├── vertical-slice/
 │   │   └── SKILL.md                       # VSA. Feature folders, endpoint grouping.
-│   │                                      # Patterns for MediatR, Wolverine, and raw
+│   │                                      # Patterns for Mediator, Wolverine, and raw
 │   │                                      # handler classes (user picks).
 │   │
 │   ├── clean-architecture/
@@ -111,7 +111,7 @@ dotnet-claude-kit/
 │   │                                      # response caching, distributed cache patterns
 │   │
 │   ├── messaging/
-│   │   └── SKILL.md                       # MassTransit, outbox pattern, saga/choreography,
+│   │   └── SKILL.md                       # Wolverine/MassTransit, outbox pattern, saga/choreography,
 │   │                                      # RabbitMQ/Azure Service Bus configuration
 │   │
 │   │  -- Observability --
@@ -610,7 +610,7 @@ dotnet test mcp/CWM.RoslynNavigator/tests/
 | **Project templates** | None | None | **5 ready-to-copy CLAUDE.md templates** |
 | **Token efficiency** | No MCP, relies on file scanning | No MCP | **Roslyn MCP for 5-10x reduction** |
 | **Architecture stance** | All patterns as equals | Akka.NET patterns | **Advisor-driven: VSA, CA, DDD, Modular Monolith** |
-| **Handler approach** | Prescriptive | N/A | **User chooses: MediatR / Wolverine / raw** |
+| **Handler approach** | Prescriptive | N/A | **User chooses: Mediator / Wolverine / raw** |
 | **Living knowledge** | Static skills only | Static skills only | **knowledge/ directory updated per .NET release** |
 | **Hooks** | Has hooks | None | **Pre-commit format + post-scaffold restore** |
 | **Decision records** | None | None | **ADRs explaining every opinionated default** |

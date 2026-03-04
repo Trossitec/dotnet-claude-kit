@@ -3,7 +3,7 @@ name: vertical-slice
 description: >
   Vertical Slice Architecture (VSA) for .NET applications — one of several
   supported architectures in dotnet-claude-kit. Covers feature folders, endpoint
-  grouping, and handler patterns for MediatR, Wolverine, and raw handler classes.
+  grouping, and handler patterns for Mediator, Wolverine, and raw handler classes.
   Load this skill when the architecture-advisor recommends VSA, when working in
   an existing VSA codebase, when adding features to a feature-folder project,
   or when discussing vertical slice patterns, feature folders, or handler patterns.
@@ -38,7 +38,7 @@ src/
         GetProduct.cs
     Common/
       Behaviors/
-        ValidationBehavior.cs   # Cross-cutting pipeline behavior
+        ValidationBehavior.cs   # Cross-cutting Mediator pipeline behavior
       Persistence/
         AppDbContext.cs
       Extensions/
@@ -46,9 +46,9 @@ src/
     Program.cs
 ```
 
-### Pattern A: MediatR Handlers
+### Pattern A: Mediator Handlers (Recommended Default)
 
-The most popular approach. Uses `IRequest<T>` / `IRequestHandler<TRequest, TResponse>` with pipeline behaviors for cross-cutting concerns.
+Source-generated mediator — MIT licensed, no reflection, Native AOT compatible. Uses `IRequest<T>` / `IRequestHandler<TRequest, TResponse>` with pipeline behaviors. Near-identical API to MediatR but faster and free. Package: `Mediator.Abstractions` + `Mediator.SourceGenerator`.
 
 ```csharp
 // Features/Orders/CreateOrder.cs
@@ -75,9 +75,9 @@ public static class CreateOrder
         }
     }
 
-    internal class Handler(AppDbContext db, TimeProvider clock) : IRequestHandler<Command, Result<OrderResponse>>
+    internal sealed class Handler(AppDbContext db, TimeProvider clock) : IRequestHandler<Command, Result<OrderResponse>>
     {
-        public async Task<Result<OrderResponse>> Handle(Command request, CancellationToken ct)
+        public async ValueTask<Result<OrderResponse>> Handle(Command request, CancellationToken ct)
         {
             var order = Order.Create(request.CustomerId, request.Items, clock.GetUtcNow());
             db.Orders.Add(order);
@@ -87,6 +87,9 @@ public static class CreateOrder
         }
     }
 }
+
+// Registration in Program.cs or module DI
+builder.Services.AddMediator();
 
 // Features/Orders/OrderEndpoints.cs — auto-discovered via IEndpointGroup
 public sealed class OrderEndpoints : IEndpointGroup
@@ -202,7 +205,7 @@ src/
 ```
 
 Modules communicate via:
-- **Integration events** (preferred) — async, decoupled via MassTransit or Wolverine
+- **Integration events** (preferred) — async, decoupled via Wolverine or MassTransit
 - **Shared contracts** — a `MyApp.Contracts` project with DTOs/interfaces (use sparingly)
 
 ### Shared Concerns
@@ -210,14 +213,14 @@ Modules communicate via:
 Cross-cutting concerns live outside feature folders:
 
 ```csharp
-// Common/Behaviors/ValidationBehavior.cs (MediatR pipeline)
-public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators)
+// Common/Behaviors/ValidationBehavior.cs (Mediator pipeline)
+public sealed class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TRequest>> validators)
     : IPipelineBehavior<TRequest, TResponse>
-    where TRequest : IRequest<TResponse>
+    where TRequest : IMessage
 {
-    public async Task<TResponse> Handle(
+    public async ValueTask<TResponse> Handle(
         TRequest request,
-        RequestHandlerDelegate<TResponse> next,
+        MessageHandlerDelegate<TRequest, TResponse> next,
         CancellationToken ct)
     {
         var context = new ValidationContext<TRequest>(request);
@@ -230,7 +233,7 @@ public class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValidator<TReq
         if (failures.Count > 0)
             throw new ValidationException(failures);
 
-        return await next();
+        return await next(request, ct);
     }
 }
 ```
@@ -284,11 +287,11 @@ Features/Orders/CancelOrder.cs
 
 | Scenario | Recommendation |
 |----------|---------------|
-| New project, team knows MediatR | Pattern A — MediatR with pipeline behaviors |
-| New project, want minimal deps | Pattern C — Raw handler classes |
-| High-throughput messaging | Pattern B — Wolverine (doubles as message bus) |
+| New project (default) | Pattern A — Mediator (source-generated, MIT, fast) |
+| Need mediator + messaging in one lib | Pattern B — Wolverine (also handles events/queues) |
+| Want full control, no dependencies | Pattern C — Raw handler classes |
+| Existing MediatR codebase with license | Keep MediatR if licensed; otherwise migrate to Mediator (near-identical API) |
 | Monolith growing complex | Add module boundaries, keep VSA within each module |
 | Simple CRUD feature | Single file: request + handler + endpoint |
 | Complex feature (saga, events) | Multiple files in feature folder, still colocated |
 | Sharing logic between features | Extract to `Common/` — not to another feature |
-| When to split into modules | When teams own different features, or when a bounded context boundary is clear |

@@ -12,7 +12,7 @@ Use this template when you're building:
 1. Copy `CLAUDE.md` into the root of your .NET Web API project
 2. Replace `[ProjectName]` with your actual project name
 3. Update the **Tech Stack** section to match your dependencies
-4. Choose your handler approach (MediatR, Wolverine, or raw handlers) and update the feature file convention accordingly
+4. Choose your handler approach (Mediator, Wolverine, or raw handlers) and update the feature file convention accordingly
 5. Remove any skills references that don't apply to your project
 
 ## What's Included
@@ -30,11 +30,11 @@ This template configures Claude Code to:
 
 ### Switching Handler Approach
 
-The template defaults to MediatR. To switch:
+The template defaults to Mediator (source-generated, MIT). To switch:
 
 **Wolverine:** Remove `IRequest<T>` references, use convention-based `Handle` methods. See the `vertical-slice` skill for Wolverine patterns.
 
-**Raw handlers:** Remove MediatR entirely, register handler classes in DI. See the `vertical-slice` skill for raw handler patterns.
+**Raw handlers:** Remove Mediator entirely, register handler classes in DI. See the `vertical-slice` skill for raw handler patterns.
 
 ### Adding Authentication
 

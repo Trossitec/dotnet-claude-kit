@@ -82,7 +82,7 @@ group.MapPost("/", async (CreateOrder.Command command, ISender sender, Cancellat
 
 ### Global Exception Handler
 
-Catches unexpected exceptions and converts them to ProblemDetails.
+Catches unexpected exceptions and converts them to ProblemDetails. For the modern `IExceptionHandler` approach (preferred), see `knowledge/common-infrastructure.md`. The inline lambda below works for simple cases:
 
 ```csharp
 // Program.cs

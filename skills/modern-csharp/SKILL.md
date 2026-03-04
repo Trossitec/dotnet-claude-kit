@@ -80,6 +80,53 @@ public class Product
 }
 ```
 
+#### Lazy Initialization with `field`
+
+```csharp
+public class ProductCatalog
+{
+    // Lazy-load on first access — no manual Lazy<T> or backing field
+    public IReadOnlyList<Product> Products
+    {
+        get => field ??= LoadProducts();
+    }
+
+    private static List<Product> LoadProducts() => /* expensive load */;
+}
+```
+
+#### Change Notification with `field`
+
+```csharp
+// INotifyPropertyChanged without manual backing fields
+public class OrderViewModel : INotifyPropertyChanged
+{
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    public string CustomerName
+    {
+        get => field;
+        set
+        {
+            if (field == value) return;
+            field = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(CustomerName)));
+        }
+    } = "";
+
+    public decimal Total
+    {
+        get => field;
+        set
+        {
+            if (field == value) return;
+            field = value;
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Total)));
+        }
+    }
+}
+```
+
 ### Extension Members (C# 14)
 
 Extension members replace static extension method classes with a cleaner syntax.

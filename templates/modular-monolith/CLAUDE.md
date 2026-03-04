@@ -11,8 +11,8 @@ This is a .NET 10 modular monolith with each module using its own internal archi
 - **.NET 10** / C# 14
 - **ASP.NET Core Minimal APIs** — `IEndpointGroup` per feature with `app.MapEndpoints()` auto-discovery, one endpoint group per feature per module
 - **Entity Framework Core** — one DbContext per module, PostgreSQL/SQL Server
-- **MassTransit** — inter-module messaging via integration events, transactional outbox
-- **MediatR** (or Wolverine or raw handlers) — intra-module command/query dispatch
+- **Wolverine** (or MassTransit) — inter-module messaging via integration events, transactional outbox
+- **Mediator** (source-generated, MIT) or Wolverine or raw handlers — intra-module command/query dispatch
 - **FluentValidation** — request validation
 - **Serilog** — structured logging
 - **xUnit v3** + **Testcontainers** — testing
@@ -30,7 +30,7 @@ src/
       Events/                            # Integration event records (pure data)
     Common/
       Result.cs                          # Result pattern
-      Behaviors/                         # MediatR pipeline behaviors
+      Behaviors/                         # Mediator pipeline behaviors
       Extensions/                        # Shared extension methods
 
   Modules/
@@ -43,7 +43,7 @@ src/
           [Module]DbContext.cs            # Module-scoped DbContext
           Configurations/                # EF entity configurations
           Migrations/                    # Module-scoped migrations
-        Consumers/                       # MassTransit event consumers
+        Consumers/                       # Wolverine/MassTransit event consumers
         [Module]Module.cs                # IServiceCollection + IEndpointRouteBuilder extensions
 
 tests/
@@ -72,7 +72,7 @@ public static class OrdersModule
         services.AddDbContext<OrdersDbContext>(options =>
             options.UseNpgsql(config.GetConnectionString("OrdersDb")));
 
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(OrdersModule).Assembly));
+        services.AddMediator(); // source-generated, registers handlers from this assembly
         services.AddValidatorsFromAssembly(typeof(OrdersModule).Assembly);
 
         return services;
@@ -101,7 +101,7 @@ public static class CreateOrder
     public record Command(...) : IRequest<Result<Response>>;
     public record Response(...);
     public class Validator : AbstractValidator<Command> { }
-    internal class Handler(OrdersDbContext db, IPublishEndpoint publisher, TimeProvider clock)
+    internal class Handler(OrdersDbContext db, IMessageBus bus, TimeProvider clock)
         : IRequestHandler<Command, Result<Response>> { }
 }
 ```
@@ -115,12 +115,17 @@ Modules communicate exclusively through integration events in the Shared contrac
 public record OrderCreated(Guid OrderId, string CustomerId, decimal Total, DateTimeOffset CreatedAt);
 
 // Orders module publishes
-await publisher.Publish(new OrderCreated(order.Id, order.CustomerId, order.Total, clock.GetUtcNow()), ct);
+await bus.PublishAsync(new OrderCreated(order.Id, order.CustomerId, order.Total, clock.GetUtcNow()));
 
-// Notifications module consumes
-public class OrderCreatedConsumer(NotificationsDbContext db) : IConsumer<OrderCreated>
+// Notifications module consumes — convention-based handler, no interface needed
+public static class OrderCreatedHandler
 {
-    public async Task Consume(ConsumeContext<OrderCreated> context) { /* ... */ }
+    public static async Task HandleAsync(
+        OrderCreated message, NotificationsDbContext db, CancellationToken ct)
+    {
+        // Handle event...
+        await db.SaveChangesAsync(ct);
+    }
 }
 ```
 
@@ -163,7 +168,7 @@ Load these dotnet-claude-kit skills for context:
 - `ddd` — Aggregates, value objects, domain events (if using DDD)
 - `project-structure` — Solution layout, Directory.Build.props, central package management
 - `ef-core` — DbContext patterns, query optimization, migrations (one DbContext per module)
-- `messaging` — MassTransit, transactional outbox, integration events between modules
+- `messaging` — Wolverine/MassTransit, transactional outbox, integration events between modules
 - `dependency-injection` — Service registration patterns, module-scoped DI
 - `error-handling` — Result pattern, ProblemDetails
 - `testing` — xUnit v3, WebApplicationFactory, Testcontainers
@@ -244,7 +249,7 @@ Do NOT generate code that:
 - Uses string interpolation in log messages — use structured logging templates
 - References another module's DbContext or internal types — communicate via integration events only
 - Shares database tables between modules — each module owns its schema
-- Calls another module's handler directly — use MassTransit publish/send for cross-module communication
+- Calls another module's handler directly — use Wolverine or MassTransit publish/send for cross-module communication
 - Puts business logic in the Shared project — the shared kernel contains only contracts, primitives, and cross-cutting infrastructure
 - Creates a single "god" DbContext for the entire application — each module gets its own DbContext
-- Publishes events without the transactional outbox — use `AddEntityFrameworkOutbox` for reliability
+- Publishes events without the transactional outbox — use Wolverine's built-in outbox or MassTransit's `AddEntityFrameworkOutbox` for reliability

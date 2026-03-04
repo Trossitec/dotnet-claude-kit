@@ -5,6 +5,49 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] — 2026-03-04
+
+### Added
+- **Common infrastructure knowledge doc** — `knowledge/common-infrastructure.md` with copy-paste implementations for Result, ValidationFilter, GlobalExceptionHandler (IExceptionHandler), IEndpointGroup + MapEndpoints, PaginationQuery, PagedList, and Program.cs setup checklist
+- **MediatR → Mediator migration guide** — `knowledge/mediatr-to-mediator-migration.md` with side-by-side API comparison, key differences (ValueTask, MessageHandlerDelegate), code examples, and step-by-step migration checklist
+- **Rate limiting section** in resilience skill — fixed window, sliding window, token bucket algorithms with custom 429 ProblemDetails response and per-endpoint `.RequireRateLimiting()` usage
+- **Additional `field` keyword examples** in modern-csharp skill — lazy initialization (`field ??=`) and INotifyPropertyChanged change notification patterns
+
+### Changed
+- **Messaging skill rewritten Wolverine-first** — All patterns (setup, publishing, consuming, outbox, saga) now show Wolverine code. MassTransit condensed to ~30-line alternative section with commercial license note
+- **Modular monolith template** updated to Wolverine types — `IPublishEndpoint` → `IMessageBus`, `IConsumer<T>` → convention-based handler
+- **Error-handling skill** — Global Exception Handler section now references `common-infrastructure.md` for the modern `IExceptionHandler` approach
+- Plugin version bumped to 0.7.0
+
+## [0.6.0] — 2026-02-28
+
+### Added
+- **16 commands** — Comprehensive command library for common .NET workflows
+- **10 rules** — Always-loaded rules for coding style, architecture, error handling, security, testing, performance, git workflow, hooks, packages, and agents
+- **`dotnet-init` command** — Renamed from `init` for clarity
+
+### Changed
+- Rules moved to `.claude/rules/` for plugin compatibility
+- Plugin manifests updated with repository URL and enhanced validation
+- CI validation updated for minimal plugin.json schema
+- Plugin version bumped to 0.6.0
+
+## [0.5.0] — 2026-02-25
+
+### Added
+- **7 meta skills** — workflow-mastery, self-correction-loop, wrap-up-ritual, context-discipline, de-sloppify, convention-learner, code-review-workflow
+- **NuGet publishing** — MCP server packaged as `CWM.RoslynNavigator` global tool
+- **Recursive solution discovery** — BFS search up to 3 levels for .slnx/.sln files
+
+### Changed
+- MCP server project restructured to use solution file
+- IEndpointGroup auto-discovery pattern enforced across all templates
+- Result pattern enforced in all scaffold and VSA examples
+- Scaffolding gaps fixed: validation, CancellationToken, OpenAPI, pagination
+- Packages rule added to enforce latest stable NuGet versions
+- README updated with IEndpointGroup, Result pattern, and scaffold checklist
+- Plugin version bumped to 0.5.0
+
 ## [0.4.0] — 2026-02-21
 
 ### Added

@@ -14,12 +14,13 @@ description: >
 
 ```bash
 # DO — gets latest stable automatically
-dotnet add package MassTransit
+dotnet add package Mediator.Abstractions
+dotnet add package Mediator.SourceGenerator
 dotnet add package Serilog.AspNetCore
 dotnet add package FluentValidation
 
 # DON'T — hardcoded version likely outdated
-dotnet add package MassTransit --version 9.0.0
+dotnet add package Mediator.Abstractions --version 2.0.0
 dotnet add package Serilog.AspNetCore --version 8.0.0
 ```
 
