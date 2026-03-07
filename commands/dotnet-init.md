@@ -43,7 +43,7 @@ Analyze the current directory to determine if this is an existing or greenfield 
   - Ask: "Project name?"
   - Scaffold the solution structure:
     - dotnet new sln -n ProjectName
-    - dotnet new web/worker/classlib as appropriate
+    - dotnet new web-api/worker/classlib as appropriate
     - Set up Directory.Build.props with .NET 10 defaults
     - Create src/ and tests/ folder structure
 ```
