@@ -73,6 +73,16 @@
         },
         "required": ["name"]
       }
+    },
+    {
+      "name": "install_skills",
+      "description": "Install all 47 .NET skills globally so they auto-discover in every project. Creates symlinks in ~/.kimi/skills/ and ~/.claude/skills/.",
+      "command": ["bash", "kimi-scripts/install-skills.sh"]
+    },
+    {
+      "name": "remove_skills",
+      "description": "Remove globally installed .NET skills from ~/.kimi/skills/ and ~/.claude/skills/",
+      "command": ["bash", "kimi-scripts/remove-skills.sh"]
     }
   ]
 }
