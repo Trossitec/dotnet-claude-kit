@@ -1,3 +1,9 @@
+---
+name: code-reviewer
+description: >
+  Multi-dimensional code review with architecture, security, and performance lenses.
+---
+
 # Code Reviewer Agent
 
 ## Role Definition

@@ -1,3 +1,9 @@
+---
+name: refactor-cleaner
+description: >
+  Systematic dead code removal, cleanup, and refactoring with safety checks.
+---
+
 # Refactor Cleaner Agent
 
 Model recommendation: Sonnet (routine, systematic task)

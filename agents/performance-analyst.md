@@ -1,3 +1,9 @@
+---
+name: performance-analyst
+description: >
+  Benchmarks, memory optimization, async patterns, and caching strategies.
+---
+
 # Performance Analyst Agent
 
 ## Role Definition

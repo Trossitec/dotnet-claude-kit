@@ -1,0 +1,78 @@
+{
+  "name": "dotnet-claude-kit",
+  "version": "0.7.0",
+  "description": "The definitive .NET development knowledge base for Kimi Code CLI. Access 47 skills, 10 agents, and 16 commands on demand.",
+  "author": {
+    "name": "Mukesh Murugan",
+    "url": "https://trossitec.com"
+  },
+  "homepage": "https://github.com/trossitec/dotnet-claude-kit",
+  "repository": "https://github.com/trossitec/dotnet-claude-kit",
+  "license": "MIT",
+  "keywords": [
+    "dotnet",
+    "csharp",
+    "aspnet",
+    "efcore",
+    "architecture",
+    "skills",
+    "agents"
+  ],
+  "tools": [
+    {
+      "name": "list_skills",
+      "description": "List all available .NET development skills with names and descriptions",
+      "command": ["bash", "kimi-scripts/list-skills.sh"]
+    },
+    {
+      "name": "get_skill",
+      "description": "Get the full markdown content of a specific skill by name (e.g. modern-csharp, ef-core, clean-architecture)",
+      "command": ["bash", "kimi-scripts/get-skill.sh"],
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Skill name, e.g. modern-csharp, ef-core, clean-architecture"
+          }
+        },
+        "required": ["name"]
+      }
+    },
+    {
+      "name": "list_agents",
+      "description": "List all specialist agent definitions",
+      "command": ["bash", "kimi-scripts/list-agents.sh"]
+    },
+    {
+      "name": "get_agent",
+      "description": "Get the full markdown content of a specific agent by name (e.g. dotnet-architect, api-designer)",
+      "command": ["bash", "kimi-scripts/get-agent.sh"],
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Agent name, e.g. dotnet-architect, api-designer, test-engineer"
+          }
+        },
+        "required": ["name"]
+      }
+    },
+    {
+      "name": "run_hook",
+      "description": "Run a quality guard hook script by name (e.g. pre-commit-antipattern, pre-build-validate, post-edit-format)",
+      "command": ["bash", "kimi-scripts/run-hook.sh"],
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Hook name without .sh extension, e.g. pre-commit-antipattern, pre-build-validate"
+          }
+        },
+        "required": ["name"]
+      }
+    }
+  ]
+}

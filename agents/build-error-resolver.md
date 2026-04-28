@@ -1,3 +1,9 @@
+---
+name: build-error-resolver
+description: >
+  Autonomous build error fixing with iterative loops and contextual skill loading.
+---
+
 # Build Error Resolver Agent
 
 Model recommendation: Sonnet (routine, iterative task)

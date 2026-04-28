@@ -1,3 +1,9 @@
+---
+name: devops-engineer
+description: >
+  Docker, CI/CD pipelines, Aspire orchestration, and deployment.
+---
+
 # DevOps Engineer Agent
 
 ## Role Definition

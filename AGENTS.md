@@ -1,6 +1,253 @@
+# dotnet-claude-kit — Agent Guide
+
+> This file tells AI coding agents everything they need to know about THIS repository. For agent routing tables, see the bottom of this file.
+
+## Project Overview
+
+dotnet-claude-kit is an opinionated Claude Code plugin and knowledge layer that makes Claude an expert .NET developer. It is NOT a typical application — it is a curated collection of skills, agents, templates, rules, and hooks delivered as a Claude Code plugin, plus a .NET 10 Roslyn MCP server for token-efficient codebase navigation.
+
+- **Repository**: https://github.com/trossitec/dotnet-claude-kit
+- **Author**: Trossitec (https://trossitec.com)
+- **License**: MIT
+- **Plugin version**: 0.7.0
+- **MCP server version**: 0.7.1
+
+### What the repository contains
+
+| Component | Count | Location | Description |
+|-----------|-------|----------|-------------|
+| Skills | 47 | `skills/<name>/SKILL.md` | Markdown reference files teaching Claude .NET best practices |
+| Agents | 10 | `agents/<name>.md` | Specialist agent definitions with skill maps and boundaries |
+| Commands | 16 | `commands/<name>.md` | Slash-command orchestrators that invoke skills and agents |
+| Rules | 10 | `.claude/rules/<name>.md` | Always-loaded conventions for every interaction |
+| Templates | 5 | `templates/<type>/` | Drop-in `CLAUDE.md` files for user projects |
+| Hooks | 7 | `hooks/<name>.sh` + `hooks/hooks.json` | Automated quality guards triggered by Claude events |
+| MCP Server | 1 | `mcp/CWM.RoslynNavigator/` | .NET 10 tool providing 15 read-only Roslyn semantic analysis tools |
+| Knowledge | 9 | `knowledge/` + `knowledge/decisions/` | Living reference docs and Architecture Decision Records |
+
+### Supported platforms
+
+The kit targets multiple AI coding tools:
+
+| Tool | Support | Install / Discovery |
+|------|---------|---------------------|
+| **Claude Code** (primary) | ✅ Full | `.claude-plugin/plugin.json` — `/plugin install dotnet-claude-kit` |
+| **Cursor IDE** | ✅ Full | `.cursor/rules/dotnet-rules.md` |
+| **Codex CLI** | ✅ Full | `.codex/AGENTS.md` |
+| **GitHub Copilot** | ✅ Full | `.github/plugin.json` — `copilot plugin install trossitec/dotnet-claude-kit` |
+| **GitHub Copilot (repo-level)** | ✅ Skills + Instructions | `.claude/skills/` + `.github/copilot-instructions.md` |
+| **Kimi Code CLI** | ✅ Plugin + Skills | `plugin.json` — `kimi plugin install https://github.com/trossitec/dotnet-claude-kit` |
+| **Kimi Code CLI (repo-level)** | ✅ Skills | `.claude/skills/` auto-discovered |
+| **VS Code Copilot** | ✅ Full | `.github/plugin.json` + `.vscode/mcp.json` |
+
+## Technology Stack
+
+### Knowledge layer (majority of the repo)
+
+- **Format**: Markdown with YAML frontmatter
+- **Language**: English (all docs, comments, and identifiers)
+- **No build step required** — skills, agents, commands, rules, and knowledge are consumed directly by the AI tool at runtime
+
+### MCP server (`mcp/CWM.RoslynNavigator/`)
+
+- **Runtime**: .NET 10 (`net10.0`)
+- **Language**: C# 14
+- **SDK**: `Microsoft.NET.Sdk`
+- **Output**: `PackAsTool` global .NET tool (`cwm-roslyn-navigator`)
+- **Key dependencies**:
+  - `ModelContextProtocol` 0.2.0-preview.1
+  - `Microsoft.CodeAnalysis.Workspaces.MSBuild` 5.0.0
+  - `Microsoft.Build.Locator` 1.7.8
+  - `Microsoft.Extensions.Hosting` 10.0.0
+- **Test framework**: xUnit v3 (`xunit.v3` 1.0.0)
+
+## Code Organization
+
+```
+dotnet-claude-kit/
+├── AGENTS.md                    # This file — project context + agent routing
+├── CLAUDE.md                    # Development conventions for THIS repo
+├── README.md                    # User-facing documentation
+├── CONTRIBUTING.md              # Contributor guide
+├── CHANGELOG.md                 # Release history
+├── .editorconfig                # C# / markdown / JSON formatting rules
+├── .gitignore                   # Git ignore patterns
+├── .mcp.json                    # MCP server registration manifest
+│
+├── agents/                      # 10 specialist agent definitions (*.md)
+├── skills/                      # 47 skills, each in `<name>/SKILL.md`
+├── commands/                    # 16 slash-command orchestrators (*.md)
+├── .claude/rules/               # 10 always-loaded rules (*.md)
+├── templates/                   # 5 drop-in CLAUDE.md templates for user projects
+│   ├── web-api/
+│   ├── modular-monolith/
+│   ├── blazor-app/
+│   ├── worker-service/
+│   └── class-library/
+├── knowledge/                   # Living reference docs (NOT skills)
+│   ├── dotnet-whats-new.md
+│   ├── common-antipatterns.md
+│   ├── package-recommendations.md
+│   ├── breaking-changes.md
+│   ├── common-infrastructure.md
+│   └── decisions/               # ADRs (Architecture Decision Records)
+├── docs/                        # Shorthand and longform user guides
+├── hooks/                       # 7 shell scripts + hooks.json manifest
+├── mcp/                         # MCP server source
+│   └── CWM.RoslynNavigator/
+│       ├── CWM.RoslynNavigator.slnx
+│       ├── src/
+│       │   └── CWM.RoslynNavigator.csproj
+│       └── tests/
+│           └── CWM.RoslynNavigator.Tests.csproj
+├── mcp-configs/                 # MCP configuration templates
+├── .claude-plugin/              # Plugin marketplace manifests
+│   ├── plugin.json
+│   └── marketplace.json
+├── .cursor/rules/               # Cursor IDE compatibility rules
+└── .github/workflows/           # CI/CD pipelines
+    ├── validate.yml
+    └── publish-nuget.yml
+```
+
+## Build and Test Commands
+
+### MCP server only (the only compiled artifact)
+
+```bash
+# Restore dependencies
+dotnet restore mcp/CWM.RoslynNavigator/CWM.RoslynNavigator.slnx
+
+# Build
+dotnet build mcp/CWM.RoslynNavigator/CWM.RoslynNavigator.slnx
+
+# Run tests
+dotnet test mcp/CWM.RoslynNavigator/CWM.RoslynNavigator.slnx
+
+# Format check (must pass in CI)
+dotnet format mcp/CWM.RoslynNavigator/CWM.RoslynNavigator.slnx --verify-no-changes --no-restore
+```
+
+### Pack and publish (maintainers only)
+
+```bash
+# Pack the dotnet tool
+dotnet pack mcp/CWM.RoslynNavigator/src/CWM.RoslynNavigator.csproj -c Release -o ./nupkg
+
+# The NuGet publish workflow is triggered manually via GitHub Actions
+# with a version input and optional dry-run flag.
+```
+
+### Validation scripts (CI runs these automatically)
+
+The `validate.yml` workflow performs the following checks on every PR and push to `main`:
+
+1. **Skill validation** — YAML frontmatter (`name`, `description`), max 400 lines, required sections (Core Principles, Patterns, Anti-patterns, Decision Guide)
+2. **Command validation** — YAML frontmatter (`description`), max 200 lines, required sections (What, When, How)
+3. **Rule validation** — YAML frontmatter (`alwaysApply: true`), max 100 lines
+4. **Agent validation** — Required sections (Role Definition, Skill Dependencies, MCP Tool Usage, Boundaries), skill references resolve to real directories
+5. **Cross-reference validation** — Commands and AGENTS.md reference only existing skills and agents
+6. **Hook validation** — All scripts referenced in `hooks.json` exist and are syntactically valid
+7. **Plugin manifest validation** — `plugin.json`, `marketplace.json`, `.mcp.json`, and `hooks.json` are valid JSON with required keys
+8. **MCP build** — `dotnet build` of the RoslynNavigator solution
+9. **MCP tests** — `dotnet test` with TRX logger
+10. **Format check** — `dotnet format --verify-no-changes`
+
+There is no local `package.json`, `Makefile`, or `justfile` — validation is handled by the GitHub Actions workflow above.
+
+## Code Style Guidelines
+
+### Markdown content (skills, agents, commands, rules, knowledge)
+
+- **Line length budgets** (enforced in CI):
+  - Skills: max 400 lines
+  - Commands: max 200 lines
+  - Rules: max 100 lines
+  - All rules combined: ~600 lines total budget
+- **YAML frontmatter is required** for skills, commands, and rules
+- **Required sections** must be present (see CI validation above)
+- **Every recommendation must have a "why"** — no bare rules without justification
+- **Anti-patterns require BAD/GOOD code comparisons**
+- **Code examples must use modern C# 14** — primary constructors, collection expressions, file-scoped namespaces, records, `field` keyword
+
+### C# (MCP server only)
+
+The `.editorconfig` enforces:
+
+- File-scoped namespaces (`csharp_style_namespace_declarations = file_scoped:warning`)
+- Primary constructors preferred
+- Collection expressions preferred
+- `var` everywhere (`true:suggestion` for built-in, apparent, and elsewhere)
+- Expression-bodied members for properties, indexers, accessors, lambdas
+- Pattern matching preferred
+- Simple `using` statements preferred
+- PascalCase for types and non-field members
+- camelCase with `_` prefix for private fields
+- System directives sorted first
+- 4-space indentation for `.cs`, 2-space for `.csproj`/`.props`/`.targets`
+- LF line endings, UTF-8, trim trailing whitespace
+
+### Key architectural constraints
+
+- **MCP tools are read-only** — no code generation, no file modifications
+- **Responses are token-optimized** — return file paths, line numbers, and short snippets, never full file contents
+- **No Swashbuckle** — use built-in .NET OpenAPI support in examples
+- **No repository pattern over EF Core** — use `DbContext` directly in examples
+- **`TimeProvider` over `DateTime.Now`** — always
+- **`IHttpClientFactory` over `new HttpClient()`** — always
+- **Use latest stable NuGet versions** — never rely on training data versions
+
+## Testing Strategy
+
+### MCP server tests
+
+- Framework: xUnit v3
+- Test project: `mcp/CWM.RoslynNavigator/tests/CWM.RoslynNavigator.Tests.csproj`
+- Test data: `TestData/SampleSolution/` — a multi-project .NET solution loaded by Roslyn at runtime (excluded from compilation, copied to output)
+- Tests cover all 15 MCP tools with real Roslyn workspace semantics
+- CI uploads TRX results as artifacts on every run
+
+### Knowledge content tests
+
+There are no unit tests for markdown content. Quality is enforced by the `validate.yml` CI pipeline, which checks structure, frontmatter, line counts, and cross-references.
+
+## Deployment and Release Process
+
+### MCP server (NuGet)
+
+The `publish-nuget.yml` workflow is triggered **manually** (`workflow_dispatch`) with inputs:
+
+- `version` — semantic version string (e.g., `0.5.0`)
+- `dry-run` — boolean, when true packs only and skips push
+
+Pipeline stages:
+1. **Test** — runs xUnit tests
+2. **Pack** — creates NuGet package with `ContinuousIntegrationBuild=true`
+3. **Publish** — pushes to NuGet.org using `secrets.NUGET_API_KEY`, then creates a GitHub release with auto-generated release notes
+
+### Plugin (Claude Code marketplace)
+
+The plugin is distributed via the Claude Code plugin marketplace (`/plugin install dotnet-claude-kit`). Version bumps are manual — update `.claude-plugin/plugin.json` and `mcp/CWM.RoslynNavigator/src/CWM.RoslynNavigator.csproj` together.
+
+### Templates
+
+Templates are not packaged — users copy `CLAUDE.md` files manually or use the `/dotnet-init` command.
+
+## Security Considerations
+
+- **No hardcoded secrets** in any markdown examples or C# code
+- **Parameterized queries** required in all data-access examples
+- **HTTPS-only** API examples
+- **`pre-bash-guard.sh` hook** blocks destructive git operations (force push, `reset --hard`) and warns on risky shell commands
+- **No sensitive file access** — MCP tools are read-only and do not modify source code
+- **NUGET_API_KEY** is the only repository secret, stored as a GitHub encrypted secret and used only in the `publish-nuget.yml` environment `nuget`
+- All shell hooks are validated for syntax in CI before merge
+
+---
+
 # Agent Routing & Orchestration
 
-> This file defines how Claude Code routes queries to specialist agents and how agents coordinate.
+> This section defines how Claude Code routes queries to specialist agents and how agents coordinate.
 
 ## Agent Roster
 

@@ -341,6 +341,164 @@ jobs:
           print('hooks.json structure validated')
           "
 
+  validate-copilot-plugin:
+    name: Validate Copilot Plugin
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Validate .github/plugin.json syntax
+        run: |
+          if ! python3 -m json.tool .github/plugin.json > /dev/null 2>&1; then
+            echo "ERROR: .github/plugin.json is not valid JSON"
+            exit 1
+          fi
+          echo "OK: .github/plugin.json is valid JSON"
+
+      - name: Validate .github/plugin.json required keys
+        run: |
+          errors=0
+          for key in name description version skills agents; do
+            if ! python3 -c "import json; d=json.load(open('.github/plugin.json')); assert '$key' in d, 'missing $key'" 2>/dev/null; then
+              echo "ERROR: .github/plugin.json missing required key '$key'"
+              errors=$((errors + 1))
+            fi
+          done
+          if [ $errors -gt 0 ]; then
+            exit 1
+          fi
+          echo ".github/plugin.json keys validated"
+
+      - name: Validate .github/plugin.json paths resolve
+        run: |
+          errors=0
+          python3 -c "
+          import json, os, sys
+          d = json.load(open('.github/plugin.json'))
+          for skill in d.get('skills', []):
+              if not os.path.isdir(skill):
+                  print(f'ERROR: skill path does not exist: {skill}')
+                  sys.exit(1)
+          for agent in d.get('agents', []):
+              if not os.path.isfile(agent):
+                  print(f'ERROR: agent path does not exist: {agent}')
+                  sys.exit(1)
+          for key in ['hooks', 'mcpServers']:
+              val = d.get(key)
+              if val and not os.path.exists(val):
+                  print(f'ERROR: {key} path does not exist: {val}')
+                  sys.exit(1)
+          print('All plugin.json paths validated')
+          "
+
+      - name: Validate .github/marketplace.json
+        run: |
+          if ! python3 -m json.tool .github/marketplace.json > /dev/null 2>&1; then
+            echo "ERROR: .github/marketplace.json is not valid JSON"
+            exit 1
+          fi
+          echo "OK: .github/marketplace.json is valid JSON"
+
+      - name: Validate .github/copilot-instructions.md
+        run: |
+          if [ ! -f ".github/copilot-instructions.md" ]; then
+            echo "ERROR: .github/copilot-instructions.md does not exist"
+            exit 1
+          fi
+          lines=$(wc -l < ".github/copilot-instructions.md")
+          if [ "$lines" -gt 300 ]; then
+            echo "ERROR: .github/copilot-instructions.md has $lines lines (max 300)"
+            exit 1
+          fi
+          echo "OK: .github/copilot-instructions.md exists ($lines lines)"
+
+      - name: Validate .github/instructions/*.instructions.md
+        run: |
+          errors=0
+          for f in .github/instructions/*.instructions.md; do
+            if [ ! -f "$f" ]; then
+              echo "WARNING: No instruction files found"
+              exit 0
+            fi
+            if ! head -1 "$f" | grep -q "^---$"; then
+              echo "ERROR: $f missing YAML frontmatter"
+              errors=$((errors + 1))
+            fi
+            if ! grep -q "^applyTo:" "$f"; then
+              echo "ERROR: $f missing 'applyTo' in frontmatter"
+              errors=$((errors + 1))
+            fi
+          done
+          if [ $errors -gt 0 ]; then
+            exit 1
+          fi
+          echo "All instruction files validated"
+
+      - name: Validate .claude/skills symlink
+        run: |
+          if [ ! -L ".claude/skills" ]; then
+            echo "ERROR: .claude/skills is not a symlink"
+            exit 1
+          fi
+          target=$(readlink ".claude/skills")
+          if [ "$target" != "../skills" ]; then
+            echo "ERROR: .claude/skills points to '$target', expected '../skills'"
+            exit 1
+          fi
+          if [ ! -d ".claude/skills/modern-csharp" ]; then
+            echo "ERROR: .claude/skills symlink does not resolve"
+            exit 1
+          fi
+          echo "OK: .claude/skills symlink valid and resolves"
+
+  validate-kimi-plugin:
+    name: Validate Kimi Plugin
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Validate root plugin.json syntax
+        run: |
+          if ! python3 -m json.tool plugin.json > /dev/null 2>&1; then
+            echo "ERROR: plugin.json is not valid JSON"
+            exit 1
+          fi
+          echo "OK: plugin.json is valid JSON"
+
+      - name: Validate root plugin.json required keys
+        run: |
+          errors=0
+          for key in name version description tools; do
+            if ! python3 -c "import json; d=json.load(open('plugin.json')); assert '$key' in d, 'missing $key'" 2>/dev/null; then
+              echo "ERROR: plugin.json missing required key '$key'"
+              errors=$((errors + 1))
+            fi
+          done
+          if [ $errors -gt 0 ]; then
+            exit 1
+          fi
+          echo "plugin.json keys validated"
+
+      - name: Validate kimi-scripts syntax
+        run: |
+          errors=0
+          for script in kimi-scripts/*.sh; do
+            if [ ! -f "$script" ]; then
+              echo "WARNING: No scripts found in kimi-scripts/"
+              exit 0
+            fi
+            if ! bash -n "$script" 2>/dev/null; then
+              echo "ERROR: $script has syntax errors"
+              errors=$((errors + 1))
+            else
+              echo "OK: $script"
+            fi
+          done
+          if [ $errors -gt 0 ]; then
+            exit 1
+          fi
+          echo "All kimi-scripts validated"
+
   build-mcp:
     name: Build MCP Server
     runs-on: ubuntu-latest

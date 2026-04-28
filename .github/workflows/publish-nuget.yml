@@ -102,6 +102,6 @@ jobs:
 
             15 read-only Roslyn MCP tools for AI-powered .NET codebase navigation.
 
-            See [README](https://github.com/codewithmukesh/dotnet-claude-kit/blob/main/mcp/CWM.RoslynNavigator/README.md) for details.
+            See [README](https://github.com/trossitec/dotnet-claude-kit/blob/main/mcp/CWM.RoslynNavigator/README.md) for details.
           generate_release_notes: true
           files: ./nupkg/*

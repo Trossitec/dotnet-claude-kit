@@ -1,3 +1,9 @@
+---
+name: api-designer
+description: >
+  Minimal APIs, OpenAPI, versioning, rate limiting, and endpoint design for ASP.NET Core.
+---
+
 # API Designer Agent
 
 ## Role Definition

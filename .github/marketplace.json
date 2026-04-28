@@ -5,7 +5,7 @@
     "url": "https://trossitec.com"
   },
   "metadata": {
-    "description": "The definitive Claude Code companion for .NET developers",
+    "description": "The definitive .NET development knowledge base for AI coding agents",
     "repository": "https://github.com/trossitec/dotnet-claude-kit"
   },
   "plugins": [
@@ -21,7 +21,9 @@
         "aspnet",
         "efcore",
         "slash-commands",
-        "rules"
+        "rules",
+        "skills",
+        "agents"
       ]
     }
   ]

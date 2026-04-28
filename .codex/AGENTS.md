@@ -1,6 +1,6 @@
 # Codex Agent Configuration
 
-This project uses [dotnet-claude-kit](https://github.com/codewithmukesh/dotnet-claude-kit) for .NET development intelligence.
+This project uses [dotnet-claude-kit](https://github.com/trossitec/dotnet-claude-kit) for .NET development intelligence.
 
 ## Available Agents
 

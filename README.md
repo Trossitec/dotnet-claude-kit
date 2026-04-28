@@ -1,11 +1,11 @@
 <p align="center">
   <h1 align="center">dotnet-claude-kit</h1>
   <p align="center">
-    <strong>Make Claude Code an expert .NET developer.</strong>
+    <strong>Make AI coding tools expert .NET developers.</strong>
     <br />
     47 skills &bull; 10 specialist agents &bull; 15 slash commands &bull; 10 rules &bull; 5 project templates &bull; 15 MCP tools &bull; 7 hooks
     <br />
-    Built for .NET 10 / C# 14. Architecture-aware. Token-efficient.
+    Built for .NET 10 / C# 14. Works with Claude Code, GitHub Copilot, and Kimi Code CLI.
   </p>
 </p>
 
@@ -86,7 +86,7 @@ Then inside a Claude Code session:
 
 ```
 # Add the marketplace and install the plugin
-/plugin marketplace add codewithmukesh/dotnet-claude-kit
+/plugin marketplace add trossitec/dotnet-claude-kit
 /plugin install dotnet-claude-kit
 ```
 
@@ -95,6 +95,34 @@ Then inside a Claude Code session:
 ```bash
 claude --plugin-dir /path/to/dotnet-claude-kit
 ```
+
+### GitHub Copilot
+
+Install as a Copilot plugin — skills, agents, hooks, and MCP config activate across VS Code and Copilot CLI:
+
+```bash
+# Install directly from GitHub
+copilot plugin install trossitec/dotnet-claude-kit
+```
+
+Or register the marketplace first:
+
+```bash
+copilot plugin marketplace add trossitec/dotnet-claude-kit
+copilot plugin install dotnet-claude-kit
+```
+
+**Repo-level usage** (no install required): When you open a project that contains this repo's `.github/copilot-instructions.md` and `.github/instructions/`, Copilot automatically loads the conventions. Skills in `.claude/skills/` are discovered automatically.
+
+### Kimi Code CLI
+
+Install as a Kimi plugin — access all 47 skills and 10 agents on demand via plugin tools:
+
+```bash
+kimi plugin install https://github.com/trossitec/dotnet-claude-kit
+```
+
+**Repo-level usage** (no install required): When you run `kimi` inside this repo, skills in `.claude/skills/` are discovered automatically. The `.kimi/skills/` path is also supported.
 
 ### Per-Project Setup
 
@@ -144,7 +172,7 @@ dotnet tool install -g CWM.RoslynNavigator
 claude mcp add --scope user cwm-roslyn-navigator -- cwm-roslyn-navigator --solution ${workspaceFolder}
 
 # 3. Clone the kit
-git clone https://github.com/codewithmukesh/dotnet-claude-kit.git
+git clone https://github.com/trossitec/dotnet-claude-kit.git
 
 # 4. Load as a local plugin (or copy a template manually)
 claude --plugin-dir ./dotnet-claude-kit
@@ -423,5 +451,5 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for how to add skills, agents, commands, 
 ---
 
 <p align="center">
-  Built by <a href="https://codewithmukesh.com">Mukesh Murugan</a> &bull; Powered by Claude Code
+  Built by <a href="https://trossitec.com">Trossitec</a> &bull; Powered by Claude Code
 </p>

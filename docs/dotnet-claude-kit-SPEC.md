@@ -573,7 +573,7 @@ Output: { "diagnostics": [{ "id": "CS8602", "severity": "warning", "message": "D
 
 ```bash
 # 1. Install as a Claude Code plugin
-claude plugin add codewithmukesh/dotnet-claude-kit
+claude plugin add trossitec/dotnet-claude-kit
 
 # 2. Copy a CLAUDE.md template into your project
 #    (pick the one that matches your project type)
@@ -588,7 +588,7 @@ cp templates/web-api/CLAUDE.md ./CLAUDE.md
 ### For contributors
 
 ```bash
-git clone https://github.com/codewithmukesh/dotnet-claude-kit.git
+git clone https://github.com/trossitec/dotnet-claude-kit.git
 cd dotnet-claude-kit
 
 # Build the Roslyn MCP server
